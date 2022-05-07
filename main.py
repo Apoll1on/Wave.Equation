@@ -63,3 +63,6 @@ if __name__ == '__main__':
     
     def DgDX(i, a):
         return -2 * a * i * h * np.exp(-a * (i * h)**2)
+    
+    afasfjlasf
+    
