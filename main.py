@@ -22,45 +22,45 @@ if __name__ == '__main__':
         return diff
     
     
-    def f1(i):
-        return (i * h - 1 / 2) ** 2 + i * h
+    def f1(x):
+        return (x - 1 / 2) ** 2 + x
 
 
-    def f2(i):
-        (i * h - 1 / 2) ** 3 + (i * h - 1 / 2) ** 2 + i * h
+    def f2(x):
+        (x - 1 / 2) ** 3 + (x - 1 / 2) ** 2 + x
 
 
-    def f3(i):
-        return np.sqrt(i * h)
+    def f3(x):
+        return np.sqrt(x)
 
 
-    def s1(i):
-        return np.sin(12 * np.pi * i * h)
+    def s1(x):
+        return np.sin(12 * np.pi * x)
 
 
-    def s2(i):
-        return np.sin(12 * np.pi * i * h) ** 4
+    def s2(x):
+        return np.sin(12 * np.pi * x) ** 4
 
 
-    def g(i, a):
-        return np.exp(-a * (i * h) ** 2)
+    def g(x, a):
+        return np.exp(-a * x ** 2)
     
     
-    def Df1DX(i):
-        return 2 * i * h
+    def Df1DX(x):
+        return 2 * x
     
-    def Df2DX(i):
-        return 3 * (i * h)**2 - i * h + 3 / 4
+    def Df2DX(x):
+        return 3 * (x)**2 - x + 3 / 4
     
-    def Df3DX(i):
-        return 0.5 / np.sqrt(i * h)
+    def Df3DX(x):
+        return 0.5 / np.sqrt(x)
     
-    def Ds1DX(i):
-        return 12 * np.pi * np.cos(12 * np.pi * i * h)
+    def Ds1DX(x):
+        return 12 * np.pi * np.cos(12 * np.pi * x)
     
-    def Ds2DX(i):
-        return 48 * np.pi * np.sin(12 * np.pi * i * h)**3 * np.cos(12 * np.pi * i * h)
+    def Ds2DX(x):
+        return 48 * np.pi * np.sin(12 * np.pi * x)**3 * np.cos(12 * np.pi * x)
     
-    def DgDX(i, a):
-        return -2 * a * i * h * np.exp(-a * (i * h)**2)
+    def DgDX(x, a):
+        return -2 * a * x * np.exp(-a * (x)**2)
     
