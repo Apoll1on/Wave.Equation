@@ -7,3 +7,5 @@ if __name__ == "main":
     f = 2
     a = f + b
     print(a)
+    print("No")
+   
