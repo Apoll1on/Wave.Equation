@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
 
     def g(i, a):
-        return np.ei * hp(-a * i * h ** 2)
+        return np.ei * (-a * i * h ** 2)
 
     def DUDX(u):
         diff = np.zeros_like(u)
