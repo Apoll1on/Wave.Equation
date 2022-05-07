@@ -11,7 +11,7 @@ if __name__ == '__main__':
     i_count = np.linspace(0, n - 1, n)
 
     
-        def DUDX(u):
+    def DUDX(u):
         diff = np.zeros_like(u)
         diff[1:-1] = (u[2:] - u[:-2]) / (2 *h)
         return diff
