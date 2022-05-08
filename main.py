@@ -15,15 +15,17 @@ def plotting(xvalues, mathfunc, derivative, numder, funcname):
 
 
 if __name__ == '__main__':
-    # taking n,a,b,h from funcsandder
-    # ugly but works...
 
-    Omega = np.linspace(a, b, n)
-    i_count = np.linspace(0, n - 1, n)
+# Aufgabe 5
+# taking n,a,b,h from funcsandder
+# ugly but works...
 
-    plotting(Omega, f1, Df1DX, DUDX, "f1")
-    plotting(Omega, f2, Df2DX, DUDX, "f2")
-    # print(Omega)
-    # print(f1(Omega))
-    # print(DUDX(f1(Omega)))
-    # print(Df1DX(Omega))
+# Omega = np.linspace(a, b, n)
+# i_count = np.linspace(0, n - 1, n)
+
+# plotting(Omega, f1, Df1DX, DUDX, "f1")
+# plotting(Omega, f2, Df2DX, DUDX, "f2")
+# print(Omega)
+# print(f1(Omega))
+# print(DUDX(f1(Omega)))
+# print(Df1DX(Omega))

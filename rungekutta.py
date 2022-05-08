@@ -1,8 +1,9 @@
-from typing import Callable
+from typing import Callable, String
 
 
-def RK4(f: Callable, u0, delt, iter, fileName):
-    f = open("calculateddata.txt", "a")
+def RK4(f: Callable, u0, delt, iter, fileName: String):
+    f = open(filename, "a")
+    f.write("New Run")
     t = 0
     u = u0
 
