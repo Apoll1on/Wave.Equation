@@ -16,6 +16,10 @@ def plotting(xvalues, mathfunc, derivative, numder, funcname):
 
 if __name__ == '__main__':
 
+# Aufgabe 6
+# Hamiltonian Function:
+    
+
 # Aufgabe 5
 # taking n,a,b,h from funcsandder
 # ugly but works...
