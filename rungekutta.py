@@ -1,3 +1,6 @@
+from typing import Callable
+
+
 def RK4(f: Callable, u0, delt, iter, fileName):
     f = open("calculateddata.txt", "a")
     t = 0
