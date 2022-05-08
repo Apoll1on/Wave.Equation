@@ -37,9 +37,9 @@ def a6():
 
     x0 = 1
     p0 = 0
-    tsteps = 200
-    delt = 4 * np.pi / tsteps
-    tmax = 4 * np.pi
+    tsteps = 1000
+    delt = 10 * np.pi / tsteps
+    tmax = 10 * np.pi
     t0 = 0
 
     f = open(fileName, "a")
@@ -78,14 +78,12 @@ def a6():
 
     f.close()
 
-    fig, ax = plt.subplots(2)
-    ax[0].plot(tarray, xarray)
-    ax[1].plot(tarray, parray)
-
     fig1, ax1 = plt.subplots()
     ax1.plot(xarray, parray)
 
     fig2, ax2 = plt.subplots()
     ax2.plot(tarray, parray ** 2 + xarray ** 2)
+    ax2.plot(tarray, xarray)
+    ax2.plot(tarray, parray)
 
     plt.show()
