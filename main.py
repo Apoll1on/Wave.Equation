@@ -1,5 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from funcsandder import *
+import rungekutta as rk
 
 
 def plotting(xvalues, mathfunc, derivative, numder, funcname):
@@ -12,88 +14,15 @@ def plotting(xvalues, mathfunc, derivative, numder, funcname):
     plt.show()
 
 
-def DUDX(u):
-    diff = np.zeros_like(u)
-    diff[1:-1] = (u[2:] - u[:-2]) / (2 * h)
-    return diff
-
-
-def D2UDX2(u):
-    diff = np.zeros_like(u)
-    diff[1:-1] = (u[2:] - 2 * u[1:-1] + u[:-2]) / (h * h)
-    return diff
-
-
-def f1(x):
-    return (x - 1 / 2) ** 2 + x
-
-
-def f2(x):
-    (x - 1 / 2) ** 3 + (x - 1 / 2) ** 2 + x
-
-
-def f3(x):
-    return np.sqrt(x)
-
-
-def s1(x):
-    return np.sin(12 * np.pi * x)
-
-
-def s2(x):
-    return np.sin(12 * np.pi * x) ** 4
-
-
-def g(x, a):
-    return np.exp(-a * x ** 2)
-
-
-def Df1DX(x):
-    return 2 * x
-
-
-def Df2DX(x):
-    return 3 * (x) ** 2 - x + 3 / 4
-
-
-def Df3DX(x):
-    return 0.5 / np.sqrt(x)
-
-
-def Ds1DX(x):
-    return 12 * np.pi * np.cos(12 * np.pi * x)
-
-
-def Ds2DX(x):
-    return 48 * np.pi * np.sin(12 * np.pi * x) ** 3 * np.cos(12 * np.pi * x)
-
-
-def DgDX(x, a):
-    return -2 * a * x * np.exp(-a * (x) ** 2)
-
-
-def RK4(f, u0, delt, iter):
-    t = 0
-    u = u0
-    for _ in range(iter):
-        k1 = f(t, u)
-        k2 = f(t + delt / 2, u0 + delt * k1 / 2)
-        k3 = f(t + delt / 2, u0 + delt * k2 / 2)
-        k4 = f(t + delt, u0 + k3)
-        u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
-    return u
-
-
 if __name__ == '__main__':
-    a = 0
-    b = 1
-    n = 20
-    h = 1 / (n - 1)
+    # taking n,a,b,h from funcsandder
+    # ugly but works
 
     Omega = np.linspace(a, b, n)
     i_count = np.linspace(0, n - 1, n)
 
     plotting(Omega, f1, Df1DX, DUDX, "f1")
+    plotting(Omega, f2, Df2DX, DUDX, "f2")
     # print(Omega)
     # print(f1(Omega))
     # print(DUDX(f1(Omega)))
