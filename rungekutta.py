@@ -37,7 +37,7 @@ def a6():
 
     x0 = 1
     p0 = 0
-    tsteps = 1000
+    tsteps = 7500  # 100 per 2pi is good
     delt = 10 * np.pi / tsteps
     tmax = 10 * np.pi
     t0 = 0
@@ -78,6 +78,9 @@ def a6():
 
     f.close()
 
+    cosarray = np.cos(tarray)
+    sinarray = np.sin(tarray)
+
     fig1, ax1 = plt.subplots()
     ax1.plot(xarray, parray)
 
@@ -85,5 +88,9 @@ def a6():
     ax2.plot(tarray, parray ** 2 + xarray ** 2)
     ax2.plot(tarray, xarray)
     ax2.plot(tarray, parray)
+
+    fig3, ax3 = plt.subplots()
+    ax3.plot(tarray, cosarray - xarray)
+    ax3.plot(tarray, sinarray + parray)
 
     plt.show()
