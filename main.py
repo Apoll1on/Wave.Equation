@@ -1,5 +1,4 @@
 import numpy as np
-import math
 from matplotlib import pyplot as plt
 
 
@@ -71,6 +70,18 @@ def Ds2DX(x):
 
 def DgDX(x, a):
     return -2 * a * x * np.exp(-a * (x) ** 2)
+
+
+def RK4(f, u0, delt, iter):
+    t = 0
+    u = u0
+    for _ in range(iter):
+        k1 = f(t, u)
+        k2 = f(t + delt / 2, u0 + delt * k1 / 2)
+        k3 = f(t + delt / 2, u0 + delt * k2 / 2)
+        k4 = f(t + delt, u0 + k3)
+        u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
+    return u
 
 
 if __name__ == '__main__':
