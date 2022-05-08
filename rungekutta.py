@@ -1,4 +1,4 @@
-def RK4(f, u0, delt, iter, fileName):
+def RK4(f: Callable, u0, delt, iter, fileName):
     f = open("calculateddata.txt", "a")
     t = 0
     u = u0
@@ -10,5 +10,5 @@ def RK4(f, u0, delt, iter, fileName):
         k4 = f(t + delt, u0 + k3)
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
 
-    f.close()
+    function.close()
     return u
