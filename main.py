@@ -26,9 +26,7 @@ def secondeq(t, x):
     return -x
 
 
-if __name__ == '__main__':
-
-    # Aufgabe 6
+def a6():
     fileName = "calculateddata.txt"
 
     x0 = 1
@@ -82,6 +80,10 @@ if __name__ == '__main__':
     ax1.plot(xarray, parray)
     plt.show()
 
+
+if __name__ == '__main__':
+    # Aufgabe 6
+    a6()
 # Aufgabe 5
 # taking n,a,b,h from funcsandder
 # ugly but works...
