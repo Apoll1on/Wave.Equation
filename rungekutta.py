@@ -1,8 +1,8 @@
-from typing import Callable, String
+from typing import Callable
 
 
-def RK4(f: Callable, u0, delt, iter, fileName: String):
-    f = open(filename, "a")
+def RK4(f: Callable, u0, delt, iter, fileName: str):
+    f = open(fileName, "a")
     f.write("New Run")
     t = 0
     u = u0
@@ -14,5 +14,5 @@ def RK4(f: Callable, u0, delt, iter, fileName: String):
         k4 = f(t + delt, u0 + k3)
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
 
-    function.close()
+    f.close()
     return u
