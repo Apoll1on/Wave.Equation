@@ -16,7 +16,7 @@ def plotting(xvalues, mathfunc, derivative, numder, funcname):
 
 if __name__ == '__main__':
     # taking n,a,b,h from funcsandder
-    # ugly but works
+    # ugly but works...
 
     Omega = np.linspace(a, b, n)
     i_count = np.linspace(0, n - 1, n)
