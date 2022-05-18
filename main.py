@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from funcsandder import *
 import rungekutta as rk
+import a7
 
 
 def plotting(xvalues, mathfunc, derivative, numder, funcname):
@@ -23,17 +24,20 @@ def plotting(xvalues, mathfunc, derivative, numder, funcname):
 
 if __name__ == '__main__':
     # Aufgabe 6
-    rk.a6()
-# Aufgabe 5
-# taking n,a,b,h from funcsandder
-# ugly but works...
+    # rk.a6()
+    # Aufgabe 5
+    # taking n,a,b,h from funcsandder
+    # ugly but works...
 
-# Omega = np.linspace(a, b, n)
-# i_count = np.linspace(0, n - 1, n)
+    # Omega = np.linspace(a, b, n)
+    # i_count = np.linspace(0, n - 1, n)
 
-# plotting(Omega, f1, Df1DX, DUDX, "f1")
-# plotting(Omega, f2, Df2DX, DUDX, "f2")
-# print(Omega)
-# print(f1(Omega))
-# print(DUDX(f1(Omega)))
-# print(Df1DX(Omega))
+    # plotting(Omega, f1, Df1DX, DUDX, "f1")
+    # plotting(Omega, f2, Df2DX, DUDX, "f2")
+    # print(Omega)
+    # print(f1(Omega))
+    # print(DUDX(f1(Omega)))
+    # print(Df1DX(Omega))
+    #
+    # aufgabe 7
+    a7.solving()
