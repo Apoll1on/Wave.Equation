@@ -15,7 +15,7 @@ def calcRHS(phi, pi, delx, xsteps):
     return result
 
 
-def solving(xsteps=21, fileName="calculateddata"):
+def solving(xsteps=101, fileName="calculateddata"):
     t = 0
     tsteps = 100
     tmax = 1
@@ -41,8 +41,9 @@ def solving(xsteps=21, fileName="calculateddata"):
     piarray[0, :] = pi[:] + 0.
     phiarray[0, :] = phi[:] + 0.
 
+    tstep = 1
     while t < tmax:
-        tstep = 0
+
         rhs = np.zeros((2, xsteps + 2), dtype=np.double)
         rhs = calcRHS(phi, pi, delx, xsteps)
         if tstep == 0:
@@ -64,10 +65,10 @@ def solving(xsteps=21, fileName="calculateddata"):
             phi[xstep + 1] = phi[xstep + 1] + delt * (kphi1 / 6 + kphi2 / 3 + kphi3 / 3 + kphi4 / 6)
             xstep = xstep + 1
 
-        t = t + delt
-        tstep = tstep + 1
         piarray[tstep, :] = pi[:] + 0.
         phiarray[tstep, :] = phi[:] + 0.
+        tstep = tstep + 1
+        t = t + delt
 
     xarray = np.array(np.arange(x0, xmax + delx, delx), dtype=np.double)
     tarray = np.array(np.arange(0, tmax + delt, delt), dtype=np.double)
