@@ -6,13 +6,15 @@ n = 20
 h = 1 / (n - 1)
 
 
-def DUDX(u):
+def DUDX(u, h):
     diff = np.zeros_like(u)
     diff[1:-1] = (u[2:] - u[:-2]) / (2 * h)
+    diff[0] = diff[1]
+    diff[-1] = diff[-2]
     return diff
 
 
-def D2UDX2(u):
+def D2UDX2(u, h):
     diff = np.zeros_like(u)
     diff[1:-1] = (u[2:] - 2 * u[1:-1] + u[:-2]) / (h * h)
     return diff

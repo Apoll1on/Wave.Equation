@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 from funcsandder import *
 import rungekutta as rk
 import a7
+import a5
 
 
 def plotting(xvalues, mathfunc, derivative, numder, funcname):
@@ -40,4 +41,6 @@ if __name__ == '__main__':
     # print(Df1DX(Omega))
     #
     # aufgabe 7
-    a7.solving()
+    #a7.solving()
+
+    a5.plot()
