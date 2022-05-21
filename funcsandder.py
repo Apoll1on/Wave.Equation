@@ -2,7 +2,7 @@ import numpy as np
 
 a = 0
 b = 1
-n = 101
+#n = 101
 #h = 1 / (n - 1)
 
 
