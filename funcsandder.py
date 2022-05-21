@@ -2,20 +2,22 @@ import numpy as np
 
 a = 0
 b = 1
-n = 20
-h = 1 / (n - 1)
+n = 101
+#h = 1 / (n - 1)
 
 
-def DUDX(u, h):
+def DUDX(u):
     diff = np.zeros_like(u)
+    h = 1 / (diff.size - 1)
     diff[1:-1] = (u[2:] - u[:-2]) / (2 * h)
     diff[0] = diff[1]
     diff[-1] = diff[-2]
     return diff
 
 
-def D2UDX2(u, h):
+def D2UDX2(u):
     diff = np.zeros_like(u)
+    h = 1 / (diff.size - 1)
     diff[1:-1] = (u[2:] - 2 * u[1:-1] + u[:-2]) / (h * h)
     return diff
 
