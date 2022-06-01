@@ -26,7 +26,8 @@ def plotting(xvalues, mathfunc, derivative, numder, funcname):
 if __name__ == '__main__':
     # Aufgabe 6
     # rk.a6()
-    # Aufgabe 5
+    # Aufgabe
+    # a5.plot()
     # taking n,a,b,h from funcsandder
     # ugly but works...
 
@@ -41,6 +42,4 @@ if __name__ == '__main__':
     # print(Df1DX(Omega))
     #
     # aufgabe 7
-    #a7.solving()
-
-    a5.plot()
+    a7.solving()

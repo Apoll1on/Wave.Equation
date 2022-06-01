@@ -2,7 +2,7 @@ import numpy as np
 import funcsandder as fad
 from matplotlib import pyplot as plt
 
-n = 10000
+n = 100
 xaxis = np.linspace(0, 1, n + 1)
 xaxis2 = np.linspace(0, 1, 2 * n + 1)
 xaxis4 = np.linspace(0, 1, 4 * n + 1)
