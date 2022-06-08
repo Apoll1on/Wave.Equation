@@ -15,7 +15,7 @@ def calcRHS(phi, pi, delx, xsteps):
     return result
 
 
-def solving(xsteps=101, fileName="calculateddata"):
+def solving(xsteps=101, fileName="calculateddata", boundaryCondition="periodic", BCimpl=None):
     t = 0
     delt = 0.001
     tmax = 1
@@ -30,6 +30,7 @@ def solving(xsteps=101, fileName="calculateddata"):
     piarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
     phiarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
 
+    # File to write Data to
     f = open(fileName, "a")
     f.write("\n\nNew Run")
 
@@ -39,13 +40,22 @@ def solving(xsteps=101, fileName="calculateddata"):
     phi[1:-1] = funcsandder.s1(np.linspace(0, 1, xsteps, dtype=np.double))
     pi[1:-1] = np.zeros(xsteps)
 
-    # Ghost Points
-    phi[0] = phi[1] + 0.
-    phi[-1] = phi[-2] + 0.
-    pi[0] = pi[1] + 0.
-    pi[-1] = pi[-2] + 0.
+    # Ghost Points according to boundary conditions:
+    if boundaryCondition == "periodic":
+        phi[-1] = phi[2]
+        phi[0] = phi[-3]
 
-    # Save Data
+        pi[-1] = pi[2]
+        pi[0] = pi[-3]
+    elif boundaryCondition == "open":
+        if BCimpl == "extrapolation":
+            pass
+        elif BCimpl == "advection":
+            pass
+        elif BCimpl == "FDstencil":
+            pass
+
+    # For Saving Data
     piarray[0, :] = pi[:] + 0.
     phiarray[0, :] = phi[:] + 0.
 
@@ -54,6 +64,8 @@ def solving(xsteps=101, fileName="calculateddata"):
 
         rhs = np.zeros((2, xsteps + 2), dtype=np.double)
         rhs = calcRHS(phi, pi, delx, xsteps)
+
+        # debugging
         # fig, ax = plt.subplots(2)
         # ax[0].plot(xarray, rhs[1, 1:-1])
         # ax[0].plot(xarray, funcsandder.D2s1D2X(xarray))
@@ -61,8 +73,8 @@ def solving(xsteps=101, fileName="calculateddata"):
         # plt.title("tstep= "+str(tstep))
         # plt.show()
 
-        xstep = 2  # set to one because the zeroth entry is the ghost point
-        while xstep < xsteps:
+        xstep = 1  # set to one because the zeroth entry is the ghost point
+        while xstep <= xsteps:
             # Berechnung der Ki:
             kphi1 = rhs[0, xstep] + 0.
             kpi1 = rhs[1, xstep] + 0.
@@ -78,14 +90,32 @@ def solving(xsteps=101, fileName="calculateddata"):
             xstep = xstep + 1
 
         # Set new BC:
-        phi[1] = phi[-1] + 0.
-        pi[1] = pi[-1] + 0.
+        if boundaryCondition == "periodic":
+            phi[1] = phi[-2] + 0.
+            pi[1] = pi[-2] + 0.
+            pass
+        elif boundaryCondition == "open":
+            if BCimpl == "extrapolation":
+                pass
+            elif BCimpl == "advection":
+                pass
+            elif BCimpl == "FDstencil":
+                pass
 
         # Ghost Points
-        phi[0] = phi[1] + 0.
-        phi[-1] = phi[-2] + 0.
-        pi[0] = pi[1] + 0.
-        pi[-1] = pi[-2] + 0.
+        if boundaryCondition == "periodic":
+            phi[-1] = phi[2]
+            phi[0] = phi[-3]
+
+            pi[-1] = pi[2]
+            pi[0] = pi[-3]
+        elif boundaryCondition == "open":
+            if BCimpl == "extrapolation":
+                pass
+            elif BCimpl == "advection":
+                pass
+            elif BCimpl == "FDstencil":
+                pass
 
         # Save data
         piarray[tstep, :] = pi[:] + 0.
@@ -94,6 +124,8 @@ def solving(xsteps=101, fileName="calculateddata"):
         # Advance time
         tstep = tstep + 1
         t = t + delt
+
+    # plotting
 
     fig1, ax1 = plt.subplots(3, 3)
     ax1[0, 0].plot(xarray, piarray[0, 1:-1])

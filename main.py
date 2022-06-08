@@ -42,4 +42,4 @@ if __name__ == '__main__':
     # print(Df1DX(Omega))
     #
     # aufgabe 7
-    a7.solving()
+    a7.solving(101, "calculateddata", "periodic")
