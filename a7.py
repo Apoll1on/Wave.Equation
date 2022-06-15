@@ -2,20 +2,21 @@ import numpy as np
 import funcsandder
 from matplotlib import pyplot as plt
 
+import misc
+
 
 def calcRHS(phi, pi, delx, xsteps):
     result = np.zeros((2, xsteps + 2), dtype=np.double)
-    result[1, 1:-1] = (phi[2:] - 2 * phi[1:-1] + phi[:-2]) / (delx * delx)
-    result[0, 1:-1] = pi[1:-1] + 0.
 
-    for i in range(1, 102):
+    for i in range(1, xsteps + 1):
         result[1, i] = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (delx * delx)
         result[0, i] = pi[i]
 
     return result
 
 
-def solving(xsteps=101, delt=0.005, timesteps=100, fileName="calculateddata", boundaryCondition="periodic",
+def solving(xsteps=101, delt=0.005, timesteps=100, linestoread=[0], fileName="calculateddata.txt",
+            boundaryCondition="periodic",
             BCimpl=None):
     t = 0
     delt = delt
@@ -28,12 +29,11 @@ def solving(xsteps=101, delt=0.005, timesteps=100, fileName="calculateddata", bo
     xarray = np.array(np.linspace(x0, xmax, xsteps), dtype=np.double)
     tarray = np.array(np.arange(0, tmax, tsteps), dtype=np.double)
 
-    piarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
-    phiarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
+    # piarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
+    # phiarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
 
     # File to write Data to
     f = open(fileName, "a")
-    f.write("\n\nNew Run")
 
     # Set initial values to one of the function s,g. 0 so far.
     pi = np.zeros(xsteps + 2, dtype=np.double)
@@ -57,22 +57,14 @@ def solving(xsteps=101, delt=0.005, timesteps=100, fileName="calculateddata", bo
             pass
 
     # For Saving Data
-    piarray[0, :] = pi[:] + 0.
-    phiarray[0, :] = phi[:] + 0.
+    # piarray[0, :] = pi[:] + 0.
+    # phiarray[0, :] = phi[:] + 0.
 
     tstep = 1
     while tstep < tsteps:
 
         rhs = np.zeros((2, xsteps + 2), dtype=np.double)
         rhs = calcRHS(phi, pi, delx, xsteps)
-
-        # debugging
-        # fig, ax = plt.subplots(2)
-        # ax[0].plot(xarray, rhs[1, 1:-1])
-        # ax[0].plot(xarray, funcsandder.D2s1D2X(xarray))
-        # ax[1].plot(xarray, funcsandder.D2s1D2X(xarray) - rhs[1, 1:-1])
-        # plt.title("tstep= "+str(tstep))
-        # plt.show()
 
         xstep = 1  # set to one because the zeroth entry is the ghost point
         while xstep <= xsteps:
@@ -119,37 +111,14 @@ def solving(xsteps=101, delt=0.005, timesteps=100, fileName="calculateddata", bo
                 pass
 
         # Save data
-        piarray[tstep, :] = pi[:] + 0.
-        phiarray[tstep, :] = phi[:] + 0.
+        # piarray[tstep, :] = pi[:] + 0.
+        # phiarray[tstep, :] = phi[:] + 0.
+        misc.savedata(f, (t, phi, pi))
 
         # Advance time
         tstep = tstep + 1
         t = t + delt
 
-    # plotting
-
-    # fig1, ax1 = plt.subplots(3, 3)
-    # ax1[0, 0].plot(xarray, piarray[0, 1:-1])
-    # ax1[0, 1].plot(xarray, piarray[12, 1:-1])
-    # ax1[0, 2].plot(xarray, piarray[25, 1:-1])
-    # ax1[1, 0].plot(xarray, piarray[37, 1:-1])
-    # ax1[1, 1].plot(xarray, piarray[50, 1:-1])
-    # ax1[1, 2].plot(xarray, piarray[62, 1:-1])
-    # ax1[2, 0].plot(xarray, piarray[75, 1:-1])
-    # ax1[2, 1].plot(xarray, piarray[87, 1:-1])
-    # ax1[2, 2].plot(xarray, piarray[99, 1:-1])
-    #
-    # fig2, ax2 = plt.subplots(3, 3)
-    # ax2[0, 0].plot(xarray, phiarray[0, 1:-1])
-    # ax2[0, 1].plot(xarray, phiarray[12, 1:-1])
-    # ax2[0, 2].plot(xarray, phiarray[25, 1:-1])
-    # ax2[1, 0].plot(xarray, phiarray[37, 1:-1])
-    # ax2[1, 1].plot(xarray, phiarray[50, 1:-1])
-    # ax2[1, 2].plot(xarray, phiarray[62, 1:-1])
-    # ax2[2, 0].plot(xarray, phiarray[75, 1:-1])
-    # ax2[2, 1].plot(xarray, phiarray[87, 1:-1])
-    # ax2[2, 2].plot(xarray, phiarray[99, 1:-1])
-    #
-    # plt.show()
-
-    return (piarray, phiarray, xarray, tarray)
+    f.close()
+    times, phiarray, piarray = misc.readdata("calculateddata.txt", xsteps, lines=linestoread)
+    return (xarray, times, phiarray, piarray)
