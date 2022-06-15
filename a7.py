@@ -15,11 +15,12 @@ def calcRHS(phi, pi, delx, xsteps):
     return result
 
 
-def solving(xsteps=101, fileName="calculateddata", boundaryCondition="periodic", BCimpl=None):
+def solving(xsteps=101, delt=0.005, timesteps=100, fileName="calculateddata", boundaryCondition="periodic",
+            BCimpl=None):
     t = 0
-    delt = 0.001
+    delt = delt
     tmax = 1
-    tsteps = 100
+    tsteps = timesteps
     x0 = 0
     xmax = 1
     delx = (xmax - x0) / (xsteps - 1)
@@ -111,7 +112,7 @@ def solving(xsteps=101, fileName="calculateddata", boundaryCondition="periodic",
             pi[0] = pi[-3]
         elif boundaryCondition == "open":
             if BCimpl == "extrapolation":
-                pass
+                phi[0] = phi[1] + (phi[1] - phi[2]) / delx
             elif BCimpl == "advection":
                 pass
             elif BCimpl == "FDstencil":
@@ -127,26 +128,28 @@ def solving(xsteps=101, fileName="calculateddata", boundaryCondition="periodic",
 
     # plotting
 
-    fig1, ax1 = plt.subplots(3, 3)
-    ax1[0, 0].plot(xarray, piarray[0, 1:-1])
-    ax1[0, 1].plot(xarray, piarray[12, 1:-1])
-    ax1[0, 2].plot(xarray, piarray[25, 1:-1])
-    ax1[1, 0].plot(xarray, piarray[37, 1:-1])
-    ax1[1, 1].plot(xarray, piarray[50, 1:-1])
-    ax1[1, 2].plot(xarray, piarray[62, 1:-1])
-    ax1[2, 0].plot(xarray, piarray[75, 1:-1])
-    ax1[2, 1].plot(xarray, piarray[87, 1:-1])
-    ax1[2, 2].plot(xarray, piarray[99, 1:-1])
+    # fig1, ax1 = plt.subplots(3, 3)
+    # ax1[0, 0].plot(xarray, piarray[0, 1:-1])
+    # ax1[0, 1].plot(xarray, piarray[12, 1:-1])
+    # ax1[0, 2].plot(xarray, piarray[25, 1:-1])
+    # ax1[1, 0].plot(xarray, piarray[37, 1:-1])
+    # ax1[1, 1].plot(xarray, piarray[50, 1:-1])
+    # ax1[1, 2].plot(xarray, piarray[62, 1:-1])
+    # ax1[2, 0].plot(xarray, piarray[75, 1:-1])
+    # ax1[2, 1].plot(xarray, piarray[87, 1:-1])
+    # ax1[2, 2].plot(xarray, piarray[99, 1:-1])
+    #
+    # fig2, ax2 = plt.subplots(3, 3)
+    # ax2[0, 0].plot(xarray, phiarray[0, 1:-1])
+    # ax2[0, 1].plot(xarray, phiarray[12, 1:-1])
+    # ax2[0, 2].plot(xarray, phiarray[25, 1:-1])
+    # ax2[1, 0].plot(xarray, phiarray[37, 1:-1])
+    # ax2[1, 1].plot(xarray, phiarray[50, 1:-1])
+    # ax2[1, 2].plot(xarray, phiarray[62, 1:-1])
+    # ax2[2, 0].plot(xarray, phiarray[75, 1:-1])
+    # ax2[2, 1].plot(xarray, phiarray[87, 1:-1])
+    # ax2[2, 2].plot(xarray, phiarray[99, 1:-1])
+    #
+    # plt.show()
 
-    fig2, ax2 = plt.subplots(3, 3)
-    ax2[0, 0].plot(xarray, phiarray[0, 1:-1])
-    ax2[0, 1].plot(xarray, phiarray[12, 1:-1])
-    ax2[0, 2].plot(xarray, phiarray[25, 1:-1])
-    ax2[1, 0].plot(xarray, phiarray[37, 1:-1])
-    ax2[1, 1].plot(xarray, phiarray[50, 1:-1])
-    ax2[1, 2].plot(xarray, phiarray[62, 1:-1])
-    ax2[2, 0].plot(xarray, phiarray[75, 1:-1])
-    ax2[2, 1].plot(xarray, phiarray[87, 1:-1])
-    ax2[2, 2].plot(xarray, phiarray[99, 1:-1])
-
-    plt.show()
+    return (piarray, phiarray, xarray, tarray)
