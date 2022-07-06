@@ -3,7 +3,6 @@ from matplotlib import pyplot as plt
 from funcsandder import *
 import rungekutta as rk
 import a7
-import a8
 import a5
 
 
@@ -43,7 +42,4 @@ if __name__ == '__main__':
     # print(Df1DX(Omega))
     #
     # aufgabe 7
-    # a7.solving(101, 0.001,100, "calculateddata", "periodic")
-
-    # aufgabe 8
-    a8.stabtest()
+    a7.solving(1001, 1000, "calculateddata", "periodic")
