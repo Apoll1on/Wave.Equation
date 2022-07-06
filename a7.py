@@ -17,6 +17,7 @@ def calcRHS(phi, pi, delx, xsteps):
 
 def solving(xsteps, timesteps, fileName="calculateddata", boundaryCondition="periodic",
             BCimpl=None):
+    #afdfa
     t = 0
     delt = 0.1 / (xsteps - 1)
     tmax = 1
