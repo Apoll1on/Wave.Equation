@@ -43,3 +43,4 @@ if __name__ == '__main__':
     #
     # aufgabe 7
     a7.solving(1001, 1000, "calculateddata", "periodic")
+    #adfasfasdf
