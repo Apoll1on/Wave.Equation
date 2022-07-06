@@ -6,10 +6,11 @@ import numpy as np
 
 
 def stabtest():
-    a = 4
-    b = 0.001
-    c = 3
-    xarray, times, phiarray, piarray = solving(a, b, c + 1)
+    a = 1001
+    c = 1000
+    linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
+                   int(c * 0.75), int(c * 0.875), c]
+    xarray, times, phiarray, piarray = solving(a, c + 1, linestoread=linestoread)
 
     # fig1, ax1 = plt.subplots(3, 3)
     # ax1[0, 0].plot(xarray, piarray[0, 1:-1])
@@ -34,15 +35,8 @@ def stabtest():
     # ax2[2, 2].plot(xarray, phiarray[99, 1:-1])
 
     fig3, ax3 = plt.subplots(1)
-    ax3.plot(xarray, phiarray[int(0 * c), :])
-    ax3.plot(xarray, phiarray[int(c * 0.125), :])
-    ax3.plot(xarray, phiarray[int(c * 0.25), :])
-    ax3.plot(xarray, phiarray[int(c * 0.375), :])
-    ax3.plot(xarray, phiarray[int(c * 0.5), :])
-    ax3.plot(xarray, phiarray[int(c * 0.625), :])
-    ax3.plot(xarray, phiarray[int(c * 0.75), :])
-    ax3.plot(xarray, phiarray[int(c * 0.875), :])
-    ax3.plot(xarray, phiarray[c, :])
+    for i in range(len(linestoread)):
+        ax3.plot(xarray, phiarray[i, :])
 
     # mylist=[]
     # for i in range(2000,c+1):

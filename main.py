@@ -1,9 +1,14 @@
 import numpy as np
 from matplotlib import pyplot as plt
+
+import a8
 from funcsandder import *
 import rungekutta as rk
 import a7
 import a5
+
+
+# hh
 
 
 def plotting(xvalues, mathfunc, derivative, numder, funcname):
@@ -42,5 +47,8 @@ if __name__ == '__main__':
     # print(Df1DX(Omega))
     #
     # aufgabe 7
-    a7.solving(1001, 1000, "calculateddata", "periodic")
-    #adfasfasdf
+    # a7.solving(1001, 1000, "calculateddata", "periodic")
+
+    # a8
+
+    a8.stabtest()

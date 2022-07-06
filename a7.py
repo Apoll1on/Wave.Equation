@@ -2,6 +2,8 @@ import numpy as np
 import funcsandder
 from matplotlib import pyplot as plt
 
+import misc
+
 
 def calcRHS(phi, pi, delx, xsteps):
     result = np.zeros((2, xsteps + 2), dtype=np.double)
@@ -15,9 +17,8 @@ def calcRHS(phi, pi, delx, xsteps):
     return result
 
 
-def solving(xsteps, timesteps, fileName="calculateddata", boundaryCondition="periodic",
+def solving(xsteps, timesteps, linestoread=[0], fileName="calculateddata.txt", boundaryCondition="periodic",
             BCimpl=None):
-    #afdfa
     t = 0
     delt = 0.1 / (xsteps - 1)
     tmax = 1
@@ -29,12 +30,11 @@ def solving(xsteps, timesteps, fileName="calculateddata", boundaryCondition="per
     xarray = np.array(np.linspace(x0, xmax, xsteps), dtype=np.double)
     tarray = np.array(np.arange(0, tmax, tsteps), dtype=np.double)
 
-    piarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
-    phiarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
+    # piarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
+    # phiarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
 
     # File to write Data to
     f = open(fileName, "a")
-    f.write("\n\nNew Run")
 
     # Set initial values to one of the function s,g. 0 so far.
     pi = np.zeros(xsteps + 2, dtype=np.double)
@@ -58,8 +58,8 @@ def solving(xsteps, timesteps, fileName="calculateddata", boundaryCondition="per
             pass
 
     # For Saving Data
-    piarray[0, :] = pi[:] + 0.
-    phiarray[0, :] = phi[:] + 0.
+    # piarray[0, :] = pi[:] + 0.
+    # phiarray[0, :] = phi[:] + 0.
 
     tstep = 1
     while tstep < tsteps:
@@ -120,37 +120,16 @@ def solving(xsteps, timesteps, fileName="calculateddata", boundaryCondition="per
                 pass
 
         # Save data
-        piarray[tstep, :] = pi[:] + 0.
-        phiarray[tstep, :] = phi[:] + 0.
+        # piarray[tstep, :] = pi[:] + 0.
+        # phiarray[tstep, :] = phi[:] + 0.
+        misc.savedata(f, (t, phi, pi))
 
         # Advance time
         tstep = tstep + 1
         t = t + delt
 
-    #plotting
+    # plotting
 
-    fig1, ax1 = plt.subplots(3, 3)
-    ax1[0, 0].plot(xarray, piarray[0, 1:-1])
-    ax1[0, 1].plot(xarray, piarray[12, 1:-1])
-    ax1[0, 2].plot(xarray, piarray[25, 1:-1])
-    ax1[1, 0].plot(xarray, piarray[37, 1:-1])
-    ax1[1, 1].plot(xarray, piarray[50, 1:-1])
-    ax1[1, 2].plot(xarray, piarray[62, 1:-1])
-    ax1[2, 0].plot(xarray, piarray[75, 1:-1])
-    ax1[2, 1].plot(xarray, piarray[87, 1:-1])
-    ax1[2, 2].plot(xarray, piarray[999, 1:-1])
-
-    fig2, ax2 = plt.subplots(3, 3)
-    ax2[0, 0].plot(xarray, phiarray[0, 1:-1])
-    ax2[0, 1].plot(xarray, phiarray[12, 1:-1])
-    ax2[0, 2].plot(xarray, phiarray[25, 1:-1])
-    ax2[1, 0].plot(xarray, phiarray[37, 1:-1])
-    ax2[1, 1].plot(xarray, phiarray[50, 1:-1])
-    ax2[1, 2].plot(xarray, phiarray[62, 1:-1])
-    ax2[2, 0].plot(xarray, phiarray[75, 1:-1])
-    ax2[2, 1].plot(xarray, phiarray[87, 1:-1])
-    ax2[2, 2].plot(xarray, phiarray[999, 1:-1])
-
-    plt.show()
-
-    return (piarray, phiarray, xarray, tarray)
+    f.close()
+    times, phiarray, piarray = misc.readdata("calculateddata.txt", xsteps, lines=linestoread)
+    return (xarray, times, phiarray, piarray)
