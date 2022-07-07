@@ -44,5 +44,5 @@ def readdata(fileName, xsteps, lines):
             index3 = index3 + 1
 
         index = index + 1
-    print(times, phiarray, piarray)
+    # print(times, phiarray, piarray)
     return (times, phiarray, piarray)

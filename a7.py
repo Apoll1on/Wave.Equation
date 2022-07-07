@@ -10,7 +10,7 @@ def calcRHS(phi, pi, delx, xsteps):
     result[1, 1:-1] = (phi[2:] - 2 * phi[1:-1] + phi[:-2]) / (delx * delx)
     result[0, 1:-1] = pi[1:-1] + 0.
 
-    for i in range(1, 102):
+    for i in range(1, xsteps+1):
         result[1, i] = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (delx * delx)
         result[0, i] = pi[i]
 
@@ -18,17 +18,14 @@ def calcRHS(phi, pi, delx, xsteps):
 
 
 def solving(xsteps, timesteps, linestoread=[0], fileName="calculateddata.txt", boundaryCondition="periodic",
-            BCimpl=None):
+            BCimpl=None, alpha=1):
     t = 0
-    delt = 0.1 / (xsteps - 1)
-    tmax = 1
+    delt = alpha / (xsteps - 1)
     tsteps = timesteps
     x0 = 0
     xmax = 1
     delx = (xmax - x0) / (xsteps - 1)
-    print(delx)
     xarray = np.array(np.linspace(x0, xmax, xsteps), dtype=np.double)
-    tarray = np.array(np.arange(0, tmax, tsteps), dtype=np.double)
 
     # piarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
     # phiarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
