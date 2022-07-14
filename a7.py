@@ -10,17 +10,17 @@ def calcRHS(phi, pi, delx, xsteps):
     result[1, 1:-1] = (phi[2:] - 2 * phi[1:-1] + phi[:-2]) / (delx * delx)
     result[0, 1:-1] = pi[1:-1] + 0.
 
-    for i in range(1, xsteps+1):
-        result[1, i] = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (delx * delx)
-        result[0, i] = pi[i]
-
+    # for i in range(1, xsteps + 1):
+    #     result[1, i] = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (delx * delx)
+    #     result[0, i] = pi[i]
     return result
 
+# for p: in x direction: p[0], p[xsteps + 1] ghostpoint; p[1], p[xsteps] = x0, xmax; from x0 to xmax (xsteps - 1) steps
 
 def solving(xsteps, timesteps, linestoread=[0], fileName="calculateddata.txt", boundaryCondition="periodic",
             BCimpl=None, alpha=1):
     t = 0
-    delt = alpha / (xsteps - 1)
+    delt = 0.001 #alpha / (xsteps - 1)
     tsteps = timesteps
     x0 = 0
     xmax = 1
@@ -36,7 +36,7 @@ def solving(xsteps, timesteps, linestoread=[0], fileName="calculateddata.txt", b
     # Set initial values to one of the function s,g. 0 so far.
     pi = np.zeros(xsteps + 2, dtype=np.double)
     phi = np.zeros(xsteps + 2, dtype=np.double)
-    phi[1:-1] = funcsandder.s1(np.linspace(0, 1, xsteps, dtype=np.double))
+    phi[1:-1] = funcsandder.f3(xarray)
     pi[1:-1] = np.zeros(xsteps)
 
     # Ghost Points according to boundary conditions:
