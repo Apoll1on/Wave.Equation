@@ -36,7 +36,7 @@ def solving(xsteps, timesteps, linestoread=[0], fileName="calculateddata.txt", b
     # Set initial values to one of the function s,g. 0 so far.
     pi = np.zeros(xsteps + 2, dtype=np.double)
     phi = np.zeros(xsteps + 2, dtype=np.double)
-    phi[1:-1] = funcsandder.f3(xarray)
+    phi[1:-1] = funcsandder.s1(xarray)
     pi[1:-1] = np.zeros(xsteps)
 
     # Ghost Points according to boundary conditions:
