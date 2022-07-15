@@ -6,13 +6,11 @@ import misc
 
 
 def calcRHS(phi, pi, delx, xsteps):
-    result = np.zeros((2, xsteps + 2), dtype=np.double)
-    result[1, 1:-1] = (phi[2:] - 2 * phi[1:-1] + phi[:-2]) / (delx * delx)
-    result[0, 1:-1] = pi[1:-1] + 0.
+    result = np.zeros((2, xsteps + 2))
+    for i in range(1, xsteps + 1):
+        result[1, i] = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (delx * delx)
+        result[0, i] = pi[i]
 
-    # for i in range(1, xsteps + 1):
-    #     result[1, i] = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (delx * delx)
-    #     result[0, i] = pi[i]
     return result
 
 # for p: in x direction: p[0], p[xsteps + 1] ghostpoint; p[1], p[xsteps] = x0, xmax; from x0 to xmax (xsteps - 1) steps
@@ -128,5 +126,5 @@ def solving(xsteps, timesteps, linestoread=[0], fileName="calculateddata.txt", b
     # plotting
 
     f.close()
-    times, phiarray, piarray = misc.readdata("calculateddata.txt", xsteps, lines=linestoread)
+    times, phiarray, piarray = misc.readdata(fileName, xsteps, lines=linestoread)
     return (xarray, times, phiarray, piarray)
