@@ -35,7 +35,7 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
     pi = np.zeros(xpoints + 2, dtype=np.double)
     phi = np.zeros(xpoints + 2, dtype=np.double)
     phi[1:-1] = funcsandder.s1(xarray)
-    pi[1:-1] = funcsandder.s2(xarray)
+    # pi[1:-1] = funcsandder.s2(xarray)
 
     # Ghost Points according to boundary conditions:
     if boundaryCondition == "periodic":
