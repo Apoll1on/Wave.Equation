@@ -1,13 +1,13 @@
 # stability tests:
 
-from a7 import solving
+from solver import solving
 from matplotlib import pyplot as plt
 import numpy as np
 
 
 def stabtest():
-    a = 201
-    c = 1000
+    a = 501
+    c = 13721
     linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
     xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread)
@@ -19,8 +19,8 @@ def stabtest():
         print(np.mean(phiarray[i]))
         print("Pi " + str(i) + " :")
         print(np.mean(piarray[i]))
-        ax0.plot(xarray, phiarray[i, :], label=i)
-        ax1.plot(xarray, piarray[i, :], label=i)
+        ax0.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
+        ax1.plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'))
 
     ax0.legend()
     ax1.legend()
@@ -28,14 +28,17 @@ def stabtest():
 
 
 def convergence():
+    periods = 10
     a = 201
-    c = 8000
-    linestoread = [0, 999, 1999, 2999, c - 1]
-    xarray, times, phiarray, piarray = solving(a, c + 1, linestoread=linestoread, alpha=.1)
+    c = periods * (a - 1)
+    linestoread = [0]
+    for i in range(1, periods):
+        linestoread.append(int(i * (a - 1)))
+    xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread, alpha=1)
     print(times)
     fig, ax = plt.subplots(1)
     for i in range(len(linestoread)):
-        ax.plot(xarray, phiarray[i, :], label=i)
+        ax.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
 
     ax.legend()
     plt.show()
@@ -46,9 +49,9 @@ def selfconvergence():
     c = 1000
     linestoread = [
         c - 1]  # 0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625), int(c * 0.75), int(c * 0.875),
-    xarray, times, phiarray, piarray = solving(a, c + 1, linestoread=linestoread, alpha=.1)
-    xarray2, times, phiarray2, piarray2 = solving(2 * a - 1, c + 1, linestoread=linestoread)
-    xarray4, times, phiarray4, piarray4 = solving(4 * (a - 1) + 1, c + 1, linestoread=linestoread)
+    xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread, alpha=.1)
+    xarray2, times, phiarray2, piarray2 = solving(2 * a - 1, c + 2, linestoread=linestoread)
+    xarray4, times, phiarray4, piarray4 = solving(4 * (a - 1) + 1, c + 2, linestoread=linestoread)
 
     fig3, ax3 = plt.subplots(1)
     ax3.plot(xarray, 8 * (phiarray[0] - phiarray2[0][::2]))  #

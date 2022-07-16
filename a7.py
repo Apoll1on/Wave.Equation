@@ -17,7 +17,7 @@ def calcRHS(phi, pi, delx, xpoints):
 # for phi in x direction: p[0], p[xpoints + 1] ghostpoint; p[1], p[xpoints] = x0, xmax; from x0 to xmax (xpoints - 1) xsteps
 
 def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", boundaryCondition="periodic",
-            BCimpl=None, alpha=0.1):
+            BCimpl=None, alpha=1):
     t = 0
     delt = alpha / (xpoints - 1)
     tsteps = timesteps
@@ -56,7 +56,6 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
         elif BCimpl == "FDstencil":
             pass
 
-
     tstep = 1
     while tstep < tsteps:
 
@@ -93,23 +92,6 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
 
         phi = phi + delt * (k1[0] / 6 + k2[0] / 3 + k3[0] / 3 + k4[0] / 6)
         pi = pi + delt * (k1[1] / 6 + k2[1] / 3 + k3[1] / 3 + k4[1] / 6)
-
-        # xstep = 1  # set to one because the zeroth entry is the ghost point
-        # while xstep <= xpoints:
-        #     # Berechnung der Ki:
-        #     kphi1 = rhs[0, xstep] + 0.
-        #     kpi1 = rhs[1, xstep] + 0.
-        #     kphi2 = rhs[0, xstep] + delt * kpi1 / 2
-        #     kpi2 =rhs [1, xstep] + 0.
-        #     kphi3 = rhs[0, xstep] + delt * kpi2 / 2
-        #     kpi3 = rhs[1, xstep] + 0.
-        #     kphi4 = rhs[0, xstep] + delt * kpi3
-        #     kpi4 = rhs[1, xstep] + 0.
-        #
-        #     pi[xstep] = pi[xstep] + delt * (kpi1 / 6 + kpi2 / 3 + kpi3 / 3 + kpi4 / 6)
-        #     phi[xstep] = phi[xstep] + delt * (kphi1 / 6 + kphi2 / 3 + kphi3 / 3 + kphi4 / 6)
-        #     xstep = xstep + 1
-
 
 
         # Ghost Points
