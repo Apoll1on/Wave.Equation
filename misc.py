@@ -7,7 +7,7 @@ def savedata(fileObject, data):
     f.write(str(data[0]) + "#")
     for parts in data[1:]:
         for pieces in parts:
-            f.write(str(pieces) + "#")
+            f.write(format(pieces, '.7f') + "#")
     f.write("\n")
 
 
