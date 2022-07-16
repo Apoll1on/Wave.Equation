@@ -11,7 +11,7 @@ def savedata(fileObject, data):
     f.write("\n")
 
 
-def readdata(fileName, xsteps, lines):
+def readdata(fileName, xpoints, lines):
     readLines = []
     f = open(fileName, "r")
     for pos, line in enumerate(f):
@@ -19,13 +19,13 @@ def readdata(fileName, xsteps, lines):
             readLines.append(line)
     #print(readLines)
     a = len(lines)
-    phiarray = np.zeros((len(lines), xsteps), dtype=np.double)
-    piarray = np.zeros((len(lines), xsteps), dtype=np.double)
+    phiarray = np.zeros((len(lines), xpoints), dtype=np.double)
+    piarray = np.zeros((len(lines), xpoints), dtype=np.double)
     times = []
 
     timeindex = 0
-    phiindex = range(2, 2 + xsteps)
-    piindex = range(2 + xsteps + 1, 2 + xsteps + 1 + xsteps)
+    phiindex = range(2, 2 + xpoints)
+    piindex = range(2 + xpoints + 1, 2 + xpoints + 1 + xpoints)
 
     index = 0
     for line in readLines:
