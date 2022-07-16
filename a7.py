@@ -3,6 +3,7 @@ import funcsandder
 from matplotlib import pyplot as plt
 
 import misc
+import os
 
 
 def calcRHS(phi, pi, delx, xsteps):
@@ -18,9 +19,9 @@ def calcRHS(phi, pi, delx, xsteps):
 # for p: in x direction: p[0], p[xsteps + 1] ghostpoint; p[1], p[xsteps] = x0, xmax; from x0 to xmax (xsteps - 1) steps
 
 def solving(xsteps, timesteps, linestoread=[0], fileName="calculateddata.txt", boundaryCondition="periodic",
-            BCimpl=None, alpha=1):
+            BCimpl=None, alpha=0.1):
     t = 0
-    delt = 0.001 #alpha / (xsteps - 1)
+    delt = alpha / (xsteps - 1)
     tsteps = timesteps
     x0 = 0
     xmax = 1
@@ -31,6 +32,7 @@ def solving(xsteps, timesteps, linestoread=[0], fileName="calculateddata.txt", b
     # phiarray = np.zeros((tsteps, xsteps + 2), dtype=np.double)
 
     # File to write Data to
+    os.remove(fileName)
     f = open(fileName, "a")
 
     # Set initial values to one of the function s,g. 0 so far.

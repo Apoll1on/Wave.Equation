@@ -17,8 +17,7 @@ def readdata(fileName, xsteps, lines):
     for pos, line in enumerate(f):
         if pos in lines:
             readLines.append(line)
-
-    print(readLines)
+    #print(readLines)
     a = len(lines)
     phiarray = np.zeros((len(lines), xsteps), dtype=np.double)
     piarray = np.zeros((len(lines), xsteps), dtype=np.double)
