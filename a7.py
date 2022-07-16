@@ -7,9 +7,11 @@ import misc
 
 def calcRHS(phi, pi, delx, xsteps):
     result = np.zeros((2, xsteps + 2))
-    for i in range(1, xsteps + 1):
-        result[1, i] = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (delx * delx)
-        result[0, i] = pi[i]
+    result[0, 1:-1] = pi[1:-1]
+    result[1, 1:-1] = (phi[2:] - 2 * phi[1:-1] + phi[0:-2]) / (delx * delx)
+    # for i in range(1, xsteps + 1):
+    #     result[1, i] = (phi[i + 1] - 2 * phi[i] + phi[i - 1]) / (delx * delx)
+    #     result[0, i] = pi[i]
 
     return result
 
