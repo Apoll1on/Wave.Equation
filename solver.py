@@ -48,8 +48,8 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
 
     # Set initial values to one of the function s,g. 0 so far.
     u = np.zeros((2, xpoints + 2), dtype=np.double)
-    u[0, 1:-1] = gausswave(xarray, 0.4, 0.05)  # funcsandder.s1(xarray)
-    u[1, 1:-1] =  # gausswave(xarray,0.1,0.1)
+    u[0, 1:-1] = funcsandder.gausswave(xarray, 0.5, 0.05)  # funcsandder.s1(xarray)
+    u[1, 1:-1] = funcsandder.dergaus(xarray, 0.5, 0.05)
 
     # Ghost Points according to boundary conditions:
     boundaryConditions(u, boundaryCondition, delx)

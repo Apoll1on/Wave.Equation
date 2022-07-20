@@ -22,10 +22,6 @@ def PTpotential(xarray):
     return 0.15 / ((np.cosh(0.18 * xarray + 0.43)) * (np.cosh(0.18 * xarray + 0.43)))
 
 
-def gausswave(xarray, mu, sigma):
-    return np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma)
-
-
 def calcK(k, delx, xpoints, xarray, boundaryCondition):
     result = np.zeros((2, xpoints + 2), dtype=np.double)
     pot = PTpotential(xarray)

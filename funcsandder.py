@@ -70,3 +70,11 @@ def Ds2DX(x):
 
 def DgDX(x, a):
     return -2 * a * x * np.exp(-a * (x) ** 2)
+
+
+def gausswave(xarray, mu, sigma):
+    return np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma)
+
+
+def dergaus(xarray, mu, sigma):
+    return (mu - xarray) * np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma * sigma * sigma)
