@@ -11,24 +11,21 @@ def stabtest():
     c = 13721
     linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread, boundaryCondition="periodic")
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread,
+                                                      boundaryCondition="extrapolation")
+
     print(times)
     fig, ax = plt.subplots(2, 1)
     for i in range(len(linestoread)):
-        print("Phi " + str(i) + " :")
-        print(np.mean(phiarray[i]))
-        print("Pi " + str(i) + " :")
-        print(np.mean(piarray[i]))
+        # print("Phi " + str(i) + " :")
+        # print(np.mean(phiarray[i]))
+        # print("Pi " + str(i) + " :")
+        # print(np.mean(piarray[i]))
         ax[0].plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
         ax[1].plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'))
 
     ax[0].set_title('phi')
     ax[1].set_title('pi')
-
-    # ax0.legend()
-    # ax0.set_title("Phi")
-    # ax1.legend()
-    # ax1.set_title("Pi")
     plt.show()
 
 
@@ -62,5 +59,5 @@ def selfconvergence():
     ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='h - h/2')  #
     ax.plot(xarray, 16 * (phiarray2[0][::2] - phiarray4[0][::4]), label='h/2 - h/4')  #
     # ax3.plot(xarray, phiarray4[0][::4])
-
+    ax.legend()
     plt.show()

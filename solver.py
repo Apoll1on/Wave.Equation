@@ -10,8 +10,8 @@ def boundaryConditions(k, boundaryCondition, delx):
         k[:, -1] = k[:, 2]
         k[:, 0] = k[:, -3]
     elif boundaryCondition == "extrapolation":
-        k[:, -1] = k[:, -2] + (k[:, -2] - k[:, -3]) / delx
-        k[:, 0] = k[:, 1] + (k[:, 1] - k[:, 2]) / delx
+        k[:, -1] = k[:, -2] + (k[:, -2] - k[:, -3])
+        k[:, 0] = k[:, 1] + (k[:, 1] - k[:, 2])
     elif boundaryCondition == "advection":
         pass
     elif boundaryCondition == "FDstencil":
