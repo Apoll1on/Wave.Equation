@@ -39,7 +39,7 @@ def convergence():
     linestoread = [0]
     for i in range(1, periods):
         linestoread.append(int(i * (a - 1)))
-    xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread, alpha=1)
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread, alpha=1)
     print(times)
     fig, ax = plt.subplots(1)
     for i in range(len(linestoread)):
@@ -54,9 +54,9 @@ def selfconvergence():
     c = 1000
     linestoread = [
         c - 1]  # 0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625), int(c * 0.75), int(c * 0.875),
-    xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread, alpha=.1)
-    xarray2, times, phiarray2, piarray2 = solving(2 * a - 1, c + 2, linestoread=linestoread)
-    xarray4, times, phiarray4, piarray4 = solving(4 * (a - 1) + 1, c + 2, linestoread=linestoread)
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread, alpha=.1)
+    xarray2, times, phiarray2, piarray2 = solver.solving(2 * a - 1, c + 2, linestoread=linestoread)
+    xarray4, times, phiarray4, piarray4 = solver.solving(4 * (a - 1) + 1, c + 2, linestoread=linestoread)
 
     fig3, ax3 = plt.subplots(1)
     ax3.plot(xarray, 8 * (phiarray[0] - phiarray2[0][::2]))  #
