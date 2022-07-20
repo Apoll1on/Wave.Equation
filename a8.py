@@ -2,19 +2,20 @@
 
 import solver
 import a7
+import a10
 from matplotlib import pyplot as plt
 import numpy as np
 
 
 def stabtest():
-    a = 501
-    c = 13721
+    a = 401
+    c = 1000
     linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
     xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread,
                                                       boundaryCondition="extrapolation")
-
     print(times)
+
     fig, ax = plt.subplots(2, 1)
     for i in range(len(linestoread)):
         # print("Phi " + str(i) + " :")
@@ -26,9 +27,12 @@ def stabtest():
 
     ax[0].set_title('phi')
     ax[1].set_title('pi')
+    ax[0].legend()
+    ax[1].legend()
     plt.show()
 
 
+# plot q over time for every timestep
 def convergence():
     periods = 10
     a = 201

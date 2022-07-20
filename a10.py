@@ -17,13 +17,20 @@ def boundaryConditions(k, boundaryCondition, delx):
     elif boundaryCondition == "FDstencil":
         pass
 
+
+def PTpotential(xarray):
+    return 0.15 / ((np.cosh(0.18 * xarray + 0.43)) * (np.cosh(0.18 * xarray + 0.43)))
+
+
 def gausswave(xarray, mu, sigma):
     return np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma)
 
-def calcK(k, delx, xpoints, boundaryCondition):
+
+def calcK(k, delx, xpoints, xarray, boundaryCondition):
     result = np.zeros((2, xpoints + 2), dtype=np.double)
+    pot = PTpotential(xarray)
     result[0, 1:-1] = k[1, 1:-1]
-    result[1, 1:-1] = (k[0, 2:] - 2 * k[0, 1:-1] + k[0, 0:-2]) / (delx * delx)
+    result[1, 1:-1] = (k[0, 2:] - 2 * k[0, 1:-1] + k[0, 0:-2]) / (delx * delx) - pot  # subtracting the potential
     boundaryConditions(result, boundaryCondition, delx)
     return result
 
@@ -48,20 +55,20 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
 
     # Set initial values to one of the function s,g. 0 so far.
     u = np.zeros((2, xpoints + 2), dtype=np.double)
-    u[0, 1:-1] = gausswave(xarray, 0.4, 0.05)  # funcsandder.s1(xarray)
-    u[1, 1:-1] =  # gausswave(xarray,0.1,0.1)
+    u[0, 1:-1] = gausswave(xarray, 0.1, 0.05)
+    # u[1,1:-1] =
 
     # Ghost Points according to boundary conditions:
     boundaryConditions(u, boundaryCondition, delx)
 
     tstep = 1
     while tstep < tsteps:
-        rhs = calcK(u, delx, xpoints, boundaryCondition)
+        rhs = calcK(u, delx, xpoints, xarray, boundaryCondition)
 
         k1 = rhs
-        k2 = calcK(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition)
-        k3 = calcK(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition)
-        k4 = calcK(u + delt * k3, delx, xpoints, boundaryCondition)
+        k2 = calcK(u + 0.5 * delt * k1, delx, xpoints, xarray, boundaryCondition)
+        k3 = calcK(u + 0.5 * delt * k2, delx, xpoints, xarray, boundaryCondition)
+        k4 = calcK(u + delt * k3, delx, xpoints, xarray, boundaryCondition)
 
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
 
@@ -69,7 +76,7 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
 
         misc.savedata(f, (t, u[0], u[1]))
 
-        # Advance time
+        # Advance timexarray
         tstep = tstep + 1
         t = t + delt
 
