@@ -12,8 +12,8 @@ def stabtest():
     c = 1000
     linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread,
-                                                      boundaryCondition="extrapolation")
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="extrapolation",
+                                                      linestoread=linestoread)
     print(times)
 
     fig, ax = plt.subplots(2, 1)
@@ -40,7 +40,8 @@ def convergence():
     linestoread = [0]
     for i in range(1, periods):
         linestoread.append(int(i * (a - 1)))
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread, alpha=1)
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="periodic",
+                                                      linestoread=linestoread)
     print(times)
     fig, ax = plt.subplots(1)
     for i in range(len(linestoread)):
@@ -53,10 +54,14 @@ def convergence():
 def selfconvergence():
     a = 201
     c = 1000
-    linestoread = [c - 1]  # 0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625), int(c * 0.75), int(c * 0.875),
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread, alpha=.1)
-    xarray2, times, phiarray2, piarray2 = solver.solving(2 * a - 1, c + 2, linestoread=linestoread, alpha=.2)
-    xarray4, times, phiarray4, piarray4 = solver.solving(4 * (a - 1) + 1, c + 2, linestoread=linestoread, alpha=.4)
+    linestoread = [
+        c - 1]  # 0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625), int(c * 0.75), int(c * 0.875),
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=.1, boundaryCondition="periodic",
+                                                      linestoread=linestoread)
+    xarray2, times, phiarray2, piarray2 = solver.solving(a, c + 2, alpha=.2, boundaryCondition="periodic",
+                                                         linestoread=linestoread)
+    xarray4, times, phiarray4, piarray4 = solver.solving(a, c + 2, alpha=.4, boundaryCondition="periodic",
+                                                         linestoread=linestoread)
 
     fig, ax = plt.subplots(1)
     ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='h - h/2')  #

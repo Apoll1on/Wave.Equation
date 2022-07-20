@@ -17,8 +17,6 @@ def boundaryConditions(k, boundaryCondition, delx):
     elif boundaryCondition == "FDstencil":
         pass
 
-def gausswave(xarray, mu, sigma):
-    return np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma)
 
 def calcK(k, delx, xpoints, boundaryCondition):
     result = np.zeros((2, xpoints + 2), dtype=np.double)
@@ -30,7 +28,7 @@ def calcK(k, delx, xpoints, boundaryCondition):
 
 # for phi in x direction: p[0], p[xpoints + 1] ghostpoint; p[1], p[xpoints] = x0, xmax; from x0 to xmax (xpoints - 1) xsteps
 
-def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", boundaryCondition="periodic", alpha=1):
+def solving(xpoints, timesteps, alpha, boundaryCondition, linestoread=[0], fileName="calculateddata.txt"):
     if linestoread is None:
         linestoread = [0]
     t = 0
