@@ -7,30 +7,34 @@ import numpy as np
 
 
 def stabtest():
-    a = 401
-    c = 1420
+    a = 501
+    c = 13721
     linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
     xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread, boundaryCondition="periodic")
     print(times)
-    fig0, ax0 = plt.subplots()
-    fig1, ax1 = plt.subplots()
+    fig, ax = plt.subplots(2, 1)
     for i in range(len(linestoread)):
         print("Phi " + str(i) + " :")
         print(np.mean(phiarray[i]))
         print("Pi " + str(i) + " :")
         print(np.mean(piarray[i]))
-        ax0.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
-        ax1.plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'))
+        ax[0].plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
+        ax[1].plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'))
 
-    ax0.legend()
-    ax1.legend()
+    ax[0].set_title('phi')
+    ax[1].set_title('pi')
+
+    # ax0.legend()
+    # ax0.set_title("Phi")
+    # ax1.legend()
+    # ax1.set_title("Pi")
     plt.show()
 
-    
+
 def convergence():
     periods = 10
-    a = 101
+    a = 201
     c = periods * (a - 1)
     linestoread = [0]
     for i in range(1, periods):
