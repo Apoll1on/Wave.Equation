@@ -1,6 +1,6 @@
 # stability tests:
 
-from solver import solving
+from a7 import solving
 from matplotlib import pyplot as plt
 import numpy as np
 
@@ -12,20 +12,22 @@ def stabtest():
                    int(c * 0.75), int(c * 0.875), c]
     xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread, alpha = 1)
     print(times)
-    fig0, ax0 = plt.subplots()
-    fig1, ax1 = plt.subplots()
+    fig, ax = plt.subplots(2, 1)
     for i in range(len(linestoread)):
         print("Phi " + str(i) + " :")
         print(np.mean(phiarray[i]))
         print("Pi " + str(i) + " :")
         print(np.mean(piarray[i]))
-        ax0.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
-        ax1.plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'))
+        ax[0].plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
+        ax[1].plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'))
 
-    ax0.legend()
-    ax0.set_title("Phi")
-    ax1.legend()
-    ax1.set_title("Pi")
+    ax[0].set_title('phi')
+    ax[1].set_title('pi')
+
+    # ax0.legend()
+    # ax0.set_title("Phi")
+    # ax1.legend()
+    # ax1.set_title("Pi")
     plt.show()
 
 

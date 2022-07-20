@@ -51,4 +51,4 @@ if __name__ == '__main__':
 
     # a8
 
-    a8.selfconvergence()
+    a8.stabtest()
