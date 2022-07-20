@@ -5,7 +5,7 @@ import misc
 import os
 
 
-def boundaryConditions(k, boundaryCondition):
+def boundaryConditions(k, boundaryCondition, delx):
     if boundaryCondition == "periodic":
         k[:, -1] = k[:, 2]
         k[:, 0] = k[:, -3]
@@ -22,7 +22,7 @@ def calcK(k, delx, xpoints, boundaryCondition):
     result = np.zeros((2, xpoints + 2), dtype=np.double)
     result[0, 1:-1] = k[1, 1:-1]
     result[1, 1:-1] = (k[0, 2:] - 2 * k[0, 1:-1] + k[0, 0:-2]) / (delx * delx)
-    boundaryConditions(result, boundaryCondition)
+    boundaryConditions(result, boundaryCondition, delx)
     return result
 
 
@@ -47,14 +47,15 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
     phi = u[0]
     pi = u[1]
     phi[1:-1] = funcsandder.s1(xarray)
+    u[0, 1:-1] = funcsandder.s1(xarray)
     # pi[1:-1] = funcsandder.s2(xarray)
 
     # Ghost Points according to boundary conditions:
-    boundaryConditions(u, boundaryCondition)
+    boundaryConditions(u, boundaryCondition, delx)
 
     tstep = 1
     while tstep < tsteps:
-        rhs = calcK(np.stack([phi, pi]), delx, xpoints, boundaryCondition)
+        rhs = calcK(u, delx, xpoints, boundaryCondition)
 
         k1 = rhs
         k2 = calcK(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition)
@@ -63,9 +64,9 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
 
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
 
-        boundaryConditions(u, boundaryCondition)
+        boundaryConditions(u, boundaryCondition, delx)
 
-        misc.savedata(f, (t, phi, pi))
+        misc.savedata(f, (t, u[0], u[1]))
 
         # Advance time
         tstep = tstep + 1

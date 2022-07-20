@@ -1,16 +1,17 @@
 # stability tests:
 
-from solver import solving
+import solver
+import a7
 from matplotlib import pyplot as plt
 import numpy as np
 
 
 def stabtest():
-    a = 501
-    c = 13721
+    a = 401
+    c = 1420
     linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread)
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, linestoread=linestoread, boundaryCondition="periodic")
     print(times)
     fig0, ax0 = plt.subplots()
     fig1, ax1 = plt.subplots()
@@ -26,10 +27,10 @@ def stabtest():
     ax1.legend()
     plt.show()
 
-
+    
 def convergence():
     periods = 10
-    a = 201
+    a = 101
     c = periods * (a - 1)
     linestoread = [0]
     for i in range(1, periods):
