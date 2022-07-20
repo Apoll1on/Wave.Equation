@@ -6,11 +6,11 @@ import numpy as np
 
 
 def stabtest():
-    a = 501
-    c = 13721
+    a = 201
+    c = 1000
     linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread)
+    xarray, times, phiarray, piarray = solving(a, c + 2, linestoread=linestoread, alpha = 1)
     print(times)
     fig0, ax0 = plt.subplots()
     fig1, ax1 = plt.subplots()
@@ -23,7 +23,9 @@ def stabtest():
         ax1.plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'))
 
     ax0.legend()
+    ax0.set_title("Phi")
     ax1.legend()
+    ax1.set_title("Pi")
     plt.show()
 
 
@@ -53,10 +55,10 @@ def selfconvergence():
     xarray2, times, phiarray2, piarray2 = solving(2 * a - 1, c + 2, linestoread=linestoread)
     xarray4, times, phiarray4, piarray4 = solving(4 * (a - 1) + 1, c + 2, linestoread=linestoread)
 
-    fig3, ax3 = plt.subplots(1)
-    ax3.plot(xarray, 8 * (phiarray[0] - phiarray2[0][::2]))  #
-    ax3.plot(xarray, (phiarray2[0][::2] - phiarray4[0][::4]))  #
-    # ax3.plot(xarray, phiarray4[0][::4])
+    fig, ax = plt.subplots(1)
+    ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label = "h - h/2")  #
+    ax.plot(xarray, 16 * (phiarray2[0][::2] - phiarray4[0][::4]), label = "h/2 - h/4")  #
+    # ax.plot(xarray, phiarray4[0][::4])
 
     print(times)
 

@@ -47,10 +47,10 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
     elif boundaryCondition == "open":
         if BCimpl == "extrapolation":
             phi[-1] = phi[-2] + (phi[-2] - phi[-3]) / delx
-            phi[0] = phi[1] - (phi[1] - phi[2]) / delx
+            phi[0] = phi[1] + (phi[1] - phi[2]) / delx
 
             pi[-1] = pi[-2] + (pi[-2] - pi[-3]) / delx
-            pi[0] = pi[1] - (pi[1] - pi[2]) / delx
+            pi[0] = pi[1] + (pi[1] - pi[2]) / delx
         elif BCimpl == "advection":
             pass
         elif BCimpl == "FDstencil":
