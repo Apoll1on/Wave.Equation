@@ -58,24 +58,9 @@ def selfconvergence():
     xarray2, times, phiarray2, piarray2 = solver.solving(2 * a - 1, c + 2, linestoread=linestoread)
     xarray4, times, phiarray4, piarray4 = solver.solving(4 * (a - 1) + 1, c + 2, linestoread=linestoread)
 
-    fig3, ax3 = plt.subplots(1)
-    ax3.plot(xarray, 8 * (phiarray[0] - phiarray2[0][::2]))  #
-    ax3.plot(xarray, (phiarray2[0][::2] - phiarray4[0][::4]))  #
+    fig, ax = plt.subplots(1)
+    ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='h - h/2')  #
+    ax.plot(xarray, 16 * (phiarray2[0][::2] - phiarray4[0][::4]), label='h/2 - h/4')  #
     # ax3.plot(xarray, phiarray4[0][::4])
-
-    print(times)
-
-    # mylist=[]
-    # for i in range(2000,c+1):
-    #     if np.max(phiarray[i,:]) >= 0.999:
-    #         mylist.append(i)
-    #
-    # print(mylist)
-    # ma=10
-    # for i in mylist:
-    #     if np.sum(phiarray[i,1:-1]-phiarray[0,1:-1]) >= np.sum(phiarray[ma,1:-1]-phiarray[0,1:-1]):
-    #         ma=i
-    #
-    # print(ma)
 
     plt.show()
