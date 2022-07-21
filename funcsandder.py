@@ -77,4 +77,4 @@ def gausswave(xarray, mu, sigma):
 
 
 def dergaus(xarray, mu, sigma):
-    return (mu - xarray) * np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma * sigma * sigma)
+    return (xarray - mu) * np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma * sigma * sigma)

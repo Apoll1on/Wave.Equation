@@ -5,23 +5,26 @@ import misc
 import os
 
 
-def boundaryConditions(k, boundaryCondition, delx):
+def boundaryConditions(u, boundaryCondition, delx):
     if boundaryCondition == "periodic":
-        k[:, -1] = k[:, 2]
-        k[:, 0] = k[:, -3]
+        u[:, -1] = u[:, 2]
+        u[:, 0] = u[:, -3]
     elif boundaryCondition == "extrapolation":
-        k[:, -1] = k[:, -2] + (k[:, -2] - k[:, -3])
-        k[:, 0] = k[:, 1] + (k[:, 1] - k[:, 2])
+        u[:, -1] = u[:, -2] + (u[:, -2] - u[:, -3])
+        u[:, 0] = u[:, 1] + (u[:, 1] - u[:, 2])
     elif boundaryCondition == "advection":
-        pass
+        u[0, 0] = u[0, 2] - 2 * delx * u[1, 1]
+        u[0,-1] = u[0, -3] - 2 * delx * u[1, -2]
+        u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
+        u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
     elif boundaryCondition == "FDstencil":
         pass
 
 
-def calcRHS(k, delx, xpoints, boundaryCondition):
+def calcRHS(u, delx, xpoints, boundaryCondition):
     result = np.zeros((2, xpoints + 2), dtype=np.double)
-    result[0, 1:-1] = k[1, 1:-1]
-    result[1, 1:-1] = (k[0, 2:] - 2 * k[0, 1:-1] + k[0, 0:-2]) / (delx * delx)
+    result[0, 1:-1] = u[1, 1:-1]
+    result[1, 1:-1] = (u[0, 2:] - 2 * u[0, 1:-1] + u[0, 0:-2]) / (delx * delx)
     boundaryConditions(result, boundaryCondition, delx)
     return result
 
@@ -49,11 +52,10 @@ def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName
     # Ghost Points according to boundary conditions:
     boundaryConditions(u, boundaryCondition, delx)
 
+    misc.savedata(f, (t, u[0], u[1]))
     tstep = 1
     while tstep < tsteps:
-        rhs = calcRHS(u, delx, xpoints, boundaryCondition)
-
-        k1 = rhs
+        k1 = calcRHS(u, delx, xpoints, boundaryCondition)
         k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition)
         k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition)
         k4 = calcRHS(u + delt * k3, delx, xpoints, boundaryCondition)
@@ -62,11 +64,10 @@ def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName
 
         boundaryConditions(u, boundaryCondition, delx)
 
-        misc.savedata(f, (t, u[0], u[1]))
-
         # Advance time
         tstep = tstep + 1
         t = t + delt
+        misc.savedata(f, (t, u[0], u[1]))
 
     f.close()
     times, phiarray, piarray = misc.readdata(fileName, xpoints, lines=linestoread)
