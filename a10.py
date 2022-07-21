@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import funcsandder
-
+from numba import jit
 import misc
 import os
+import time
 
 
 def boundaryConditions(k, boundaryCondition, delx):
@@ -23,9 +24,8 @@ def PTpotential(xarray):
     return 0.15 / ((np.cosh(0.18 * (xarray) + 0.43)) * (np.cosh(0.18 * (xarray) + 0.43)))
 
 
-def calcRHS(k, delx, xpoints, xarray, boundaryCondition):
+def calcRHS(k, delx, xpoints, xarray, boundaryCondition, pot):
     result = np.zeros((2, xpoints + 2), dtype=np.double)
-    pot = PTpotential(xarray)
     result[0, 1:-1] = k[1, 1:-1]
     result[1, 1:-1] = (k[0, 2:] - 2 * k[0, 1:-1] + k[0, 0:-2]) / (delx * delx) - pot  # subtracting the potential
     boundaryConditions(result, boundaryCondition, delx)
@@ -41,6 +41,7 @@ def solving(x0,xmax,xpoints,t0,timesteps,alpha,
     delx = (xmax - x0) / (xpoints - 1)
     xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
 
+    pot = PTpotential(xarray)
 
     # File to write Data to
     if os.path.exists(fileName):
@@ -58,19 +59,26 @@ def solving(x0,xmax,xpoints,t0,timesteps,alpha,
     misc.savedata(f, (t, u[0], u[1]))
     tstep = 1
     while tstep < timesteps:
-        k1 = calcRHS(u, delx, xpoints, xarray,boundaryCondition)
-        k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints,xarray, boundaryCondition)
-        k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, xarray,boundaryCondition)
-        k4 = calcRHS(u + delt * k3, delx, xpoints, xarray,boundaryCondition)
-
+        #start_time = time.time()
+        k1 = calcRHS(u, delx, xpoints, xarray, boundaryCondition, pot)
+        k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, xarray, boundaryCondition, pot)
+        k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, xarray, boundaryCondition, pot)
+        k4 = calcRHS(u + delt * k3, delx, xpoints, xarray, boundaryCondition, pot)
+        #print("--- %s seconds ---" % (time.time() - start_time))
+        #start_time = time.time()
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
-
+        #print("--- %s seconds ---" % (time.time() - start_time))
+        #start_time = time.time()
         boundaryConditions(u, boundaryCondition, delx)
-
+        #print("--- %s seconds ---" % (time.time() - start_time))
         # Advance time
         tstep = tstep + 1
         t = t + delt
+
+        start_time = time.time()
         misc.savedata(f, (t, u[0], u[1]))
+        print("--- %s seconds ---" % (time.time() - start_time))
+
 
     f.close()
     times, phiarray, piarray = misc.readdata(fileName, xpoints, lines=linestoread)
