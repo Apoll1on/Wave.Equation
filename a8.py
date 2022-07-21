@@ -8,22 +8,25 @@ import numpy as np
 
 
 def stabtest():
-    a = 401
+    a = 501
     c = 1000
-    linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
+    linestoread = [0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="extrapolation",
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="advection",
                                                       linestoread=linestoread)
     print(times)
 
+
     fig, ax = plt.subplots(2, 1)
-    for i in range(len(linestoread)):
+    c = plt.get_cmap('gist_rainbow')
+    n = len(linestoread)
+    for i in range(n):
         # print("Phi " + str(i) + " :")
         # print(np.mean(phiarray[i]))
         # print("Pi " + str(i) + " :")
         # print(np.mean(piarray[i]))
-        ax[0].plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
-        ax[1].plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'))
+        ax[0].plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'), color = c(i/(n-1)))
+        ax[1].plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'), color = c(i/(n-1)))
 
     ax[0].set_title('phi')
     ax[1].set_title('pi')

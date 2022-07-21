@@ -25,7 +25,7 @@ def readdata(fileName, xpoints, lines):
 
     timeindex = 0
     phiindex = range(2, 2 + xpoints)
-    piindex = range(2 + xpoints + 1, 2 + xpoints + 1 + xpoints)
+    piindex = range(2 + xpoints + 2, 2 + xpoints + 2 + xpoints)
 
     index = 0
     for line in readLines:
