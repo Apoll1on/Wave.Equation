@@ -64,6 +64,7 @@ def solving(xpoints, timesteps, alpha, boundaryCondition, linestoread=[0], fileN
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
 
         boundaryConditions(u, boundaryCondition, delx)
+        print(u[0, 0], u[0, -1], u[1, 0], u[1, -1])
 
         misc.savedata(f, (t, u[0], u[1]))
 
