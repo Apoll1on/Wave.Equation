@@ -31,7 +31,7 @@ def convergence(x0, xmax, xpoints, t0, timesteps, alpha,
                                                    phiinit, piinit, boundaryCondition, fileName,linestoread,periods):
     timesteps = periods * (xpoints - 1)/alpha
     linestoread = [0]
-    for i in range(1, periods):
+    for i in range(1, periods + 1):
         linestoread.append(int(i * (xpoints - 1)))
     xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps+2, alpha,
                                                    phiinit, piinit, boundaryCondition, fileName, linestoread)

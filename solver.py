@@ -67,7 +67,7 @@ def solving(x0,xmax,xpoints,t0,timesteps,alpha,
             u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
 
             boundaryConditions(u, boundaryCondition, delx)
-            print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
+            # print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
 
             # Advance time
             tstep = tstep + 1
@@ -113,7 +113,7 @@ def solving(x0,xmax,xpoints,t0,timesteps,alpha,
             phi_old[0, 0] = u[0, 1]
             phi_old[0, 1] = u[0, -2]
 
-            print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
+            # print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
 
             # Advance time
             tstep = tstep + 1
