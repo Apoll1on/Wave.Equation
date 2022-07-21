@@ -1,15 +1,16 @@
 import funcsandder
 import numpy as np
+import a8
 
 #xsteps
 x0=0
 xmax=1
-xpoints=101
+xpoints=1001
 
 
 #timesteps
-periods=10
-timesteps=periods*1000#number of timesteps
+tcount=10 # Number of lines to read out/plot
+timesteps= tcount * 100 # number of timesteps, factor has to be the same as in " #read data"
 t0=0 #starting time
 
 
@@ -24,18 +25,16 @@ phiinit = funcsandder.s1(xarray)
 piinit=np.zeros(xpoints,dtype=np.double)
 
 #Boundary condition
-boundaryCondition="extrapolation"
+boundaryCondition="advection"
 
 #read data
 fileName="calculateddata.txt"
 linestoread = [0]
-for i in range(1, periods):
-    linestoread.append(i * 1000)
+for i in range(1, tcount + 1):
+    linestoread.append(i * 100)
 
 
-
-
-a8new.stabtest(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
+a8.stabtest(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
 
 #testa10new.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
 #testa10new.plotten(xpoints,xarray,linestoread,fileName)
