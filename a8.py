@@ -12,7 +12,7 @@ def stabtest():
     c = 1000
     linestoread = [0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="FDstencil",
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="advection",
                                                       linestoread=linestoread)
     print(times)
 
