@@ -1,14 +1,19 @@
+import a8
+import a10
 import funcsandder
 import numpy as np
+import testa10
+
+
 
 #xsteps
-x0=0
-xmax=1
-xpoints=101
+x0=-30
+xmax=10
+xpoints=4001
 
 
 #timesteps
-periods=10
+periods=20
 timesteps=periods*1000#number of timesteps
 t0=0 #starting time
 
@@ -35,8 +40,8 @@ for i in range(1, periods):
 
 
 
-a8new.stabtest(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
+# a8.stabtest(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
 
-#testa10new.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
-#testa10new.plotten(xpoints,xarray,linestoread,fileName)
+testa10.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
+#testa10.plotten(xpoints,xarray,linestoread,fileName)
 #a8.stabtest()

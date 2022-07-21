@@ -1,13 +1,13 @@
 import misc
 import a10
 from matplotlib import pyplot as plt
-
+import time
 
 def calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread):
-
-    xarray, times, phiarray, piarray = a10new.solving(x0,xmax,xpoints,t0,timesteps+2,alpha,
+    start_time = time.time()
+    xarray, times, phiarray, piarray = a10.solving(x0,xmax,xpoints,t0,timesteps+2,alpha,
                                                    phiinit,piinit,boundaryCondition,fileName,linestoread)
-
+    print("--- %s seconds ---" % (time.time() - start_time))
     print(times)
 
     fig, ax = plt.subplots(2, 1)
