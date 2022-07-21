@@ -8,11 +8,11 @@ import numpy as np
 
 
 def stabtest():
-    a = 501
-    c = 1000
+    a = 2001
+    c = 1123
     linestoread = [0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
                    int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="advection",
+    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="FDstencil",
                                                       linestoread=linestoread)
     print(times)
 

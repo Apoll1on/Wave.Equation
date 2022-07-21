@@ -5,7 +5,7 @@ import misc
 import os
 
 
-def boundaryConditions(u, boundaryCondition, delx):
+def boundaryConditions(u, boundaryCondition, delx, alpha = 1, phi_old_left = 0, phi_old_right = 0):
     if boundaryCondition == "periodic":
         u[:, -1] = u[:, 2]
         u[:, 0] = u[:, -3]
@@ -18,14 +18,17 @@ def boundaryConditions(u, boundaryCondition, delx):
         u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
         u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
     elif boundaryCondition == "FDstencil":
-        pass
+        u[0,0] = (alpha * (2 * u[0,1] - u[0,2]) + u[0,2] + (2 * phi_old_left - 2 * u[0,1]) / alpha) / (alpha + 1)
+        u[0, -1] = (alpha * (2 * u[0, -2] - u[0, -3]) + u[0, -3] + (2 * phi_old_right - 2 * u[0, -2]) / alpha) / (alpha + 1)
+        u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
+        u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
 
 
-def calcRHS(u, delx, xpoints, boundaryCondition):
+def calcRHS(u, delx, xpoints, boundaryCondition, alpha = 1, phi_old_left = 0, phi_old_right = 0):
     result = np.zeros((2, xpoints + 2), dtype=np.double)
     result[0, 1:-1] = u[1, 1:-1]
     result[1, 1:-1] = (u[0, 2:] - 2 * u[0, 1:-1] + u[0, 0:-2]) / (delx * delx)
-    boundaryConditions(result, boundaryCondition, delx)
+    boundaryConditions(result, boundaryCondition, delx, alpha, phi_old_left, phi_old_right)
     return result
 
 
@@ -46,31 +49,82 @@ def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName
 
     # Set initial values to one of the function s,g. 0 so far.
     u = np.zeros((2, xpoints + 2), dtype=np.double)
-    # u[0, 1:-1] = funcsandder.gausswave(xarray, 0.5, 0.05)  # funcsandder.s1(xarray)
-    # u[1, 1:-1] = funcsandder.dergaus(xarray, 0.5, 0.05)
-    u[0, 1:-1] = funcsandder.s1(xarray)
-    u[1, 1:-1] = 0
+    u[0, 1:-1] = funcsandder.gausswave(xarray, 0.5, 0.05)  # funcsandder.s1(xarray)
+    u[1, 1:-1] = funcsandder.dergaus(xarray, 0.5, 0.05)
+    # u[0, 1:-1] = funcsandder.s1(xarray)
+    # u[1, 1:-1] = 0
 
-    # Ghost Points according to boundary conditions:
-    boundaryConditions(u, boundaryCondition, delx)
 
-    misc.savedata(f, (t, u[0], u[1]))
-    tstep = 1
-    while tstep < tsteps:
-        k1 = calcRHS(u, delx, xpoints, boundaryCondition)
-        k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition)
-        k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition)
-        k4 = calcRHS(u + delt * k3, delx, xpoints, boundaryCondition)
+    if boundaryCondition != "FDstencil":
+        # Ghost Points according to boundary conditions:
+        boundaryConditions(u, boundaryCondition, delx)
+
+        misc.savedata(f, (t, u[0], u[1]))
+        tstep = 1
+        while tstep < tsteps:
+            k1 = calcRHS(u, delx, xpoints, boundaryCondition)
+            k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition)
+            k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition)
+            k4 = calcRHS(u + delt * k3, delx, xpoints, boundaryCondition)
+
+            u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
+
+            boundaryConditions(u, boundaryCondition, delx)
+            print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
+
+            # Advance time
+            tstep = tstep + 1
+            t = t + delt
+            misc.savedata(f, (t, u[0], u[1]))
+
+    else:
+        # Ghost Points according to boundary conditions:
+        boundaryConditions(u, "advection", delx)
+
+        misc.savedata(f, (t, u[0], u[1]))
+        phi_old = np.zeros((2,2))
+        phi_old[1,0] = u[0,1]
+        phi_old[1, 1] = u[0, -2]
+
+        k1 = calcRHS(u, delx, xpoints, "advection")
+        k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, "advection")
+        k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, "advection")
+        k4 = calcRHS(u + delt * k3, delx, xpoints, "advection")
 
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
+        phi_old[0, 0] = u[0, 1]
+        phi_old[0, 1] = u[0, -2]
 
-        boundaryConditions(u, boundaryCondition, delx)
+        boundaryConditions(u, "advection", delx)
         print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
 
         # Advance time
-        tstep = tstep + 1
         t = t + delt
         misc.savedata(f, (t, u[0], u[1]))
+
+        tstep = 2
+        while tstep < tsteps:
+            k1 = calcRHS(u, delx, xpoints, boundaryCondition, alpha, phi_old[1,0], phi_old[1,1])
+            k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition, alpha, phi_old[1,0], phi_old[1,1])
+            k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition, alpha, phi_old[1,0], phi_old[1,1])
+            k4 = calcRHS(u + delt * k3, delx, xpoints, boundaryCondition, alpha, phi_old[1,0], phi_old[1,1])
+
+            u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
+
+            boundaryConditions(u, boundaryCondition, delx, alpha, phi_old[1,0], phi_old[1,1])
+            phi_old[1,:] = phi_old[0,:]
+            phi_old[0, 0] = u[0, 1]
+            phi_old[0, 1] = u[0, -2]
+
+            print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
+
+            # Advance time
+            tstep = tstep + 1
+            t = t + delt
+            misc.savedata(f, (t, u[0], u[1]))
+
+
+
 
     f.close()
     times, phiarray, piarray = misc.readdata(fileName, xpoints, lines=linestoread)
