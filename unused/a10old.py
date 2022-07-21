@@ -34,13 +34,17 @@ def calcRHS(k, delx, xpoints, xarray, boundaryCondition):
 
 # for phi in x direction: p[0], p[xpoints + 1] ghostpoint; p[1], p[xpoints] = x0, xmax; from x0 to xmax (xpoints - 1) xsteps
 
-def solving(x0,xmax,xpoints,t0,timesteps,alpha,
-                                                   phiinit,piinit,boundaryCondition,fileName,linestoread):
-    t=t0
+def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName="calculateddata.txt"):
+    t = 0
     delt = alpha / (xpoints - 1)
+    x0 = -25
+    xmax = 15
     delx = (xmax - x0) / (xpoints - 1)
     xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
 
+    fig, ax = plt.subplots(1)
+    ax.plot(xarray, PTpotential(xarray))
+    plt.show()
 
     # File to write Data to
     if os.path.exists(fileName):
@@ -49,15 +53,15 @@ def solving(x0,xmax,xpoints,t0,timesteps,alpha,
 
     # Set initial values to one of the function s,g. 0 so far.
     u = np.zeros((2, xpoints + 2), dtype=np.double)
-    u[0, 1:-1] = phiinit
-    u[1, 1:-1] = piinit
+    u[0, 1:-1] = funcsandder.gausswave(xarray, -20., 0.05)  # funcsandder.s1(xarray)
+    u[1, 1:-1] = funcsandder.dergaus(xarray, -20., 0.05)
 
     # Ghost Points according to boundary conditions:
     boundaryConditions(u, boundaryCondition, delx)
 
     misc.savedata(f, (t, u[0], u[1]))
     tstep = 1
-    while tstep < timesteps:
+    while tstep < tsteps:
         k1 = calcRHS(u, delx, xpoints, xarray,boundaryCondition)
         k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints,xarray, boundaryCondition)
         k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, xarray,boundaryCondition)

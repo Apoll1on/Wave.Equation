@@ -34,11 +34,10 @@ def calcRHS(u, delx, xpoints, boundaryCondition, alpha = 1, phi_old_left = 0, ph
 
 # for phi in x direction: p[0], p[xpoints + 1] ghostpoint; p[1], p[xpoints] = x0, xmax; from x0 to xmax (xpoints - 1) xsteps
 
-def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName="calculateddata.txt"):
-    t = 0
+def solving(x0,xmax,xpoints,t0,timesteps,alpha,
+                                                   phiinit,piinit,boundaryCondition,fileName,linestoread):
+    t=t0
     delt = alpha / (xpoints - 1)
-    x0 = 0
-    xmax = 1
     delx = (xmax - x0) / (xpoints - 1)
     xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
 
@@ -49,10 +48,8 @@ def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName
 
     # Set initial values to one of the function s,g. 0 so far.
     u = np.zeros((2, xpoints + 2), dtype=np.double)
-    u[0, 1:-1] = funcsandder.gausswave(xarray, 0.5, 0.05)  # funcsandder.s1(xarray)
-    u[1, 1:-1] = funcsandder.dergaus(xarray, 0.5, 0.05)
-    # u[0, 1:-1] = funcsandder.s1(xarray)
-    # u[1, 1:-1] = 0
+    u[0, 1:-1] = phiinit
+    u[1, 1:-1] = piinit
 
 
     if boundaryCondition != "FDstencil":
@@ -61,7 +58,7 @@ def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName
 
         misc.savedata(f, (t, u[0], u[1]))
         tstep = 1
-        while tstep < tsteps:
+        while tstep < timesteps:
             k1 = calcRHS(u, delx, xpoints, boundaryCondition)
             k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition)
             k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition)
@@ -103,7 +100,7 @@ def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName
         misc.savedata(f, (t, u[0], u[1]))
 
         tstep = 2
-        while tstep < tsteps:
+        while tstep < timesteps:
             k1 = calcRHS(u, delx, xpoints, boundaryCondition, alpha, phi_old[1,0], phi_old[1,1])
             k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition, alpha, phi_old[1,0], phi_old[1,1])
             k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition, alpha, phi_old[1,0], phi_old[1,1])

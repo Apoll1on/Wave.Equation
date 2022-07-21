@@ -1,21 +1,12 @@
-# stability tests:
-
 import solver
-import a7
-import a10
 from matplotlib import pyplot as plt
-import numpy as np
 
 
-def stabtest():
-    a = 501
-    c = 1000
-    linestoread = [0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
-                   int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="advection",
-                                                      linestoread=linestoread)
+def stabtest(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread):
+
+    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
+                                                   phiinit, piinit, boundaryCondition, fileName, linestoread)
     print(times)
-
 
     fig, ax = plt.subplots(2, 1)
     c = plt.get_cmap('gist_rainbow')
@@ -36,35 +27,34 @@ def stabtest():
 
 
 # plot q over time for every timestep
-def convergence():
-    periods = 10
-    a = 201
-    c = periods * (a - 1)
+def convergence(x0, xmax, xpoints, t0, timesteps, alpha,
+                                                   phiinit, piinit, boundaryCondition, fileName,linestoread,periods):
+    timesteps = periods * (xpoints - 1)/alpha
     linestoread = [0]
     for i in range(1, periods):
-        linestoread.append(int(i * (a - 1)))
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="periodic",
-                                                      linestoread=linestoread)
-    print(times)
+        linestoread.append(int(i * (xpoints - 1)))
+    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps+2, alpha,
+                                                   phiinit, piinit, boundaryCondition, fileName, linestoread)
+    print("alpha",alpha,"\ntimes",times)
     fig, ax = plt.subplots(1)
     for i in range(len(linestoread)):
         ax.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
 
     ax.legend()
+    ax.set_title("alpha"+format(float(alpha), '.2f'))
     plt.show()
 
 
-def selfconvergence():
-    a = 201
-    c = 1000
-    linestoread = [
-        c - 1]  # 0, int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625), int(c * 0.75), int(c * 0.875),
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=.1, boundaryCondition="periodic",
-                                                      linestoread=linestoread)
-    xarray2, times, phiarray2, piarray2 = solver.solving(a, c + 2, alpha=.2, boundaryCondition="periodic",
-                                                         linestoread=linestoread)
-    xarray4, times, phiarray4, piarray4 = solver.solving(a, c + 2, alpha=.4, boundaryCondition="periodic",
-                                                         linestoread=linestoread)
+def selfconvergence(x0, xmax, xpoints, t0, timesteps, alpha,
+                                                   phiinit, piinit, boundaryCondition, fileName, linestoread):
+
+    linestoread = [timesteps - 1]
+    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, 0.25*alpha,
+                                                   phiinit, piinit, boundaryCondition, fileName, linestoread)
+    xarray2, times, phiarray2, piarray2 = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, 0.5*alpha,
+                                                   phiinit, piinit, boundaryCondition, fileName, linestoread)
+    xarray4, times, phiarray4, piarray4 = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
+                                                   phiinit, piinit, boundaryCondition, fileName, linestoread)
 
     fig, ax = plt.subplots(1)
     ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='h - h/2')  #
