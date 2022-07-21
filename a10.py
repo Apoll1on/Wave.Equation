@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import funcsandder
 
@@ -19,7 +20,7 @@ def boundaryConditions(k, boundaryCondition, delx):
 
 
 def PTpotential(xarray):
-    return 0.15 / ((np.cosh(0.18 * xarray + 0.43)) * (np.cosh(0.18 * xarray + 0.43)))
+    return 0.15 / ((np.cosh(0.18 * (xarray) + 0.43)) * (np.cosh(0.18 * (xarray) + 0.43)))
 
 
 def calcK(k, delx, xpoints, xarray, boundaryCondition):
@@ -33,16 +34,17 @@ def calcK(k, delx, xpoints, xarray, boundaryCondition):
 
 # for phi in x direction: p[0], p[xpoints + 1] ghostpoint; p[1], p[xpoints] = x0, xmax; from x0 to xmax (xpoints - 1) xsteps
 
-def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", boundaryCondition="periodic", alpha=1):
-    if linestoread is None:
-        linestoread = [0]
+def solving(xpoints, tsteps, alpha, boundaryCondition, linestoread=[0], fileName="calculateddata.txt"):
     t = 0
     delt = alpha / (xpoints - 1)
-    tsteps = timesteps
-    x0 = 0
-    xmax = 1
+    x0 = -25
+    xmax = 15
     delx = (xmax - x0) / (xpoints - 1)
     xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
+
+    fig, ax = plt.subplots(1)
+    ax.plot(xarray, PTpotential(xarray))
+    plt.show()
 
     # File to write Data to
     if os.path.exists(fileName):
@@ -51,8 +53,8 @@ def solving(xpoints, timesteps, linestoread=[0], fileName="calculateddata.txt", 
 
     # Set initial values to one of the function s,g. 0 so far.
     u = np.zeros((2, xpoints + 2), dtype=np.double)
-    u[0, 1:-1] = gausswave(xarray, 0.1, 0.05)
-    # u[1,1:-1] =
+    u[0, 1:-1] = funcsandder.gausswave(xarray, -20., 0.05)  # funcsandder.s1(xarray)
+    u[1, 1:-1] = -funcsandder.dergaus(xarray, -20., 0.05)
 
     # Ghost Points according to boundary conditions:
     boundaryConditions(u, boundaryCondition, delx)

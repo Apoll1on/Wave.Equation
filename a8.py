@@ -8,12 +8,14 @@ import numpy as np
 
 
 def stabtest():
-    a = 401
-    c = 1000
-    linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),
-                   int(c * 0.75), int(c * 0.875), c]
-    xarray, times, phiarray, piarray = solver.solving(a, c + 2, alpha=1, boundaryCondition="extrapolation",
-                                                      linestoread=linestoread)
+    a = 4001
+    c = 80000
+    # linestoread = [int(0 * c), int(c * 0.125), int(c * 0.25), int(c * 0.375), int(c * 0.5), int(c * 0.625),int(c * 0.75), int(c * 0.875), c]
+    linestoread = [0]
+    for i in range(1, 80):
+        linestoread.append(i * 1000)
+    xarray, times, phiarray, piarray = a10.solving(a, c + 2, alpha=1, boundaryCondition="extrapolation",
+                                                   linestoread=linestoread)
     print(times)
 
     fig, ax = plt.subplots(2, 1)
