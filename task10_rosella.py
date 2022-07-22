@@ -1,11 +1,10 @@
 import numpy as np
-import misc
-import os
+from matplotlib import pyplot as plt
+import time
 
 
 def boundaryConditions(k, boundaryCondition, delx):
-    """Applying different boundary conditions."""
-    #We only used extrapolation here so far because the boundaries do not really matter anyway
+    """Applying different boundary conditions"""
     if boundaryCondition == "periodic":
         k[:, -1] = k[:, 2]
         k[:, 0] = k[:, -3]
@@ -37,7 +36,7 @@ def calcRHS(k, delx, xpoints, xarray, boundaryCondition, pot):
 
 def solving(x0, xmax, xpoints, t0, timesteps, alpha,
             phiinit, piinit, boundaryCondition, fileName, linestoread):
-    """Here is where everything is put together. First initial data is set up and then the time stepping loop begins."""
+    """Here is where the calculation is put together. First initial data is set up and then the time stepping loop begins."""
     t = t0
     delt = alpha / (xpoints - 1)
     delx = (xmax - x0) / (xpoints - 1)
@@ -98,12 +97,59 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
 
         tstep = tstep + 1
 
-    if os.path.exists(fileName):
-        os.remove(fileName)
-    f = open(fileName, "a")
-
-    for i in range(len(linestoread)):
-        misc.savedata(f, times[i], phiarray[i], piarray[i])
-
     #when returning we can leave out the ghost points
     return (xarray, times, phiarray[:, 1:-1], piarray[:, 1:-1])
+
+
+
+
+
+def calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread):
+    """Here we calculate for some given initial data and then also plot it."""
+
+    #initial data
+    # xsteps
+    x0 = -50
+    xmax = 200
+    xpoints = 5001
+
+    # timesteps
+    periods = 1500#just to simplify plotting
+    timesteps = periods * 1000  # number of timesteps
+    t0 = 0  # starting time
+
+    # alpha
+    alpha = 1
+
+    # Initial conditions
+    xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
+    phiinit = funcsandder.gausswave(xarray, -40., 0.1)  # phi. just a gauss wave pulse with mu=-40 and sigma=0.1
+    piinit = funcsandder.dergaus(xarray, -40, 0.1)  # pi. timelike derivative of gauss pulse above
+
+    # Boundary condition
+    boundaryCondition = "extrapolation"
+
+
+
+    #calculation
+    xarray, times, phiarray, piarray = solving(x0,xmax,xpoints,t0,timesteps+2,alpha,
+                                                   phiinit,piinit,boundaryCondition,fileName,linestoread)
+
+    #plotting phi and pi in subplot 1 and 2.
+    #Only printing every 100*1000=100000 timesteps, therefore in the loop it says 100*i
+    fig, ax = plt.subplots(2, 1)
+    c = plt.get_cmap('gist_rainbow')
+    n = len(linestoread)
+    for i in range(int(n/100)):
+        # print("Phi " + str(i) + " :")
+        # print(np.mean(phiarray[i]))
+        # print("Pi " + str(i) + " :")
+        # print(np.mean(piarray[i]))
+        ax[0].plot(xarray, phiarray[100*i, :]+100*i*a10ram.PTpotential(xarray), label=format(float(times[100*i]), '.4f'), color = c(100*i/(n-1)))
+        ax[1].plot(xarray, piarray[100*i, :], label=format(float(times[100*i]), '.4f'), color = c(100*i/(n-1)))
+
+    ax[0].set_title('phi')
+    ax[1].set_title('pi')
+    ax[0].legend()
+    ax[1].legend()
+    plt.show()

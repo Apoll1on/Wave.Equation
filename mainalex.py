@@ -8,12 +8,12 @@ import testa10ram
 
 #xsteps
 x0=-50
-xmax=400
-xpoints=15001
+xmax=200
+xpoints=5001
 
 
 #timesteps
-periods=5000
+periods=1500
 timesteps=periods*1000#number of timesteps
 t0=0 #starting time
 
@@ -42,5 +42,5 @@ for i in range(1, periods):
 
 # a8.stabtest(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
 
-testa10ram.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
-# testa10ram.plotten(xpoints,xarray,linestoread,fileName)
+#testa10ram.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
+testa10ram.plotten(xpoints,xarray,linestoread,fileName)
