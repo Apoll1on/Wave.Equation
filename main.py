@@ -17,14 +17,14 @@ t0 = 0  # starting time
 alpha = 1
 
 # Initial conditions
-xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
+xarray = np.linspace(x0, xmax, xpoints)
 # phiinit=funcsandder.gausswave(xarray,-20.,0.05)#phi
 # piinit=funcsandder.dergaus(xarray,-20,0.05)#pi
 phiinit = funcsandder.s1(xarray)
 piinit = np.zeros(xpoints, dtype=np.double)
 
 # Boundary condition
-boundaryCondition = "advection"
+boundaryCondition = "FDstencil"
 
 # read data
 fileName = "calculateddata.txt"
@@ -32,7 +32,7 @@ linestoread = [0]
 for i in range(1, tcount + 1):
     linestoread.append(i * timesteps / tcount)
 
-a8.stabtest(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread)
+a8.convergence(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread, 15)
 
 # testa10new.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
 # testa10new.plotten(xpoints,xarray,linestoread,fileName)

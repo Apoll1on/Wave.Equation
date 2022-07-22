@@ -54,13 +54,13 @@ def selfconvergence(x0, xmax, xpoints, t0, timesteps, alpha,
 
     linestoread = [timesteps - 1]
     xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, 0.1,
-                                                      func_phiint(np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)), func_piint(xpoints), boundaryCondition, fileName,
+                                                      func_phiint(np.linspace(x0, xmax, xpoints)), func_piint(xpoints), boundaryCondition, fileName,
                                                       linestoread)
     xarray2, times, phiarray2, piarray2 = solver.solving(x0, xmax, 2 * xpoints - 1, t0, timesteps + 2, 0.2,
-                                                         func_phiint(np.array(np.linspace(x0, xmax, 2 * xpoints - 1), dtype=np.double)), func_piint(2 * xpoints - 1),
+                                                         func_phiint(np.linspace(x0, xmax, 2 * xpoints - 1)), func_piint(2 * xpoints - 1),
                                                          boundaryCondition, fileName, linestoread)
     xarray4, times, phiarray4, piarray4 = solver.solving(x0, xmax, 4 * (xpoints - 1) + 1, t0, timesteps + 2, 0.4,
-                                                         func_phiint(np.array(np.linspace(x0, xmax, 4 * (xpoints - 1) + 1), dtype=np.double)), func_piint(4 * (xpoints - 1) + 1),
+                                                         func_phiint(np.linspace(x0, xmax, 4 * (xpoints - 1) + 1)), func_piint(4 * (xpoints - 1) + 1),
                                                          boundaryCondition, fileName, linestoread)
 
     fig, ax = plt.subplots(1)
