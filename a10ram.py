@@ -43,43 +43,58 @@ def solving(x0,xmax,xpoints,t0,timesteps,alpha,
 
     pot = PTpotential(xarray)
 
-    # File to write Data to
-    if os.path.exists(fileName):
-        os.remove(fileName)
-    f = open(fileName, "a")
+    #save data in array:
+    phiarray = np.zeros((len(linestoread), xpoints+2), dtype=np.double)
+    piarray = np.zeros((len(linestoread), xpoints+2), dtype=np.double)
+    times = []
+    index = 0
 
     # Set initial values to one of the function s,g. 0 so far.
     u = np.zeros((2, xpoints + 2), dtype=np.double)
     u[0, 1:-1] = phiinit
     u[1, 1:-1] = piinit
 
+    if 0 in linestoread:
+        times.append(t)
+        phiarray[index, :] = u[0, :]
+        piarray[index, :] = u[1, :]
+        index = index + 1
+
+
     # Ghost Points according to boundary conditions:
     boundaryConditions(u, boundaryCondition, delx)
 
-    misc.savedata(f, (t, u[0], u[1]))
+
     tstep = 1
     while tstep < timesteps:
-        #start_time = time.time()
+
         k1 = calcRHS(u, delx, xpoints, xarray, boundaryCondition, pot)
         k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, xarray, boundaryCondition, pot)
         k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, xarray, boundaryCondition, pot)
         k4 = calcRHS(u + delt * k3, delx, xpoints, xarray, boundaryCondition, pot)
-        #print("--- %s seconds ---" % (time.time() - start_time))
-        #start_time = time.time()
+
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
-        #print("--- %s seconds ---" % (time.time() - start_time))
-        #start_time = time.time()
+
         boundaryConditions(u, boundaryCondition, delx)
-        #print("--- %s seconds ---" % (time.time() - start_time))
+
         # Advance time
-        tstep = tstep + 1
         t = t + delt
 
-        start_time = time.time()
-        misc.savedata(f, t, u[0], u[1])
-        print("--- %s seconds ---" % (time.time() - start_time))
+
+        if tstep in linestoread:
+            times.append(t)
+            phiarray[index,:]=u[0,:]
+            piarray[index,:]=u[1,:]
+            index=index+1
+
+        tstep = tstep + 1
+
+    if os.path.exists(fileName):
+        os.remove(fileName)
+    f = open(fileName, "a")
+
+    for i in range(len(linestoread)):
+        misc.savedata(f, times[i], phiarray[i], piarray[i])
 
 
-    f.close()
-    times, phiarray, piarray = misc.readdata(fileName, xpoints, lines=linestoread)
-    return (xarray, times, phiarray, piarray)
+    return (xarray, times, phiarray[:,1:-1], piarray[:,1:-1])
