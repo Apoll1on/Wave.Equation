@@ -2,8 +2,10 @@ import numpy as np
 
 a = 0
 b = 1
-#n = 101
-#h = 1 / (n - 1)
+
+
+# n = 101
+# h = 1 / (n - 1)
 
 
 def DUDX(u):
@@ -61,8 +63,10 @@ def Df3DX(x):
 def Ds1DX(x):
     return 12 * np.pi * np.cos(12 * np.pi * x)
 
+
 def D2s1D2X(x):
     return -12 * 12 * np.pi * np.pi * np.sin(12 * np.pi * x)
+
 
 def Ds2DX(x):
     return 48 * np.pi * np.sin(12 * np.pi * x) ** 3 * np.cos(12 * np.pi * x)
