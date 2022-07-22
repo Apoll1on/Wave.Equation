@@ -1,5 +1,4 @@
 import numpy as np
-
 import funcsandder
 import solver
 from matplotlib import pyplot as plt
