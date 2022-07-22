@@ -1,6 +1,4 @@
 import numpy as np
-from numba import jit
-
 
 def savedata(fileObject, *data):
     """Put data in following order: time,phi,pi"""

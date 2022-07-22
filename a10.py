@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import funcsandder
-from numba import jit
 import misc
 import os
 import time
