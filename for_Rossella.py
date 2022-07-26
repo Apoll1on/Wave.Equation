@@ -57,7 +57,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
         # Ghost Points according to boundary conditions:
         boundaryConditions(u, boundaryCondition, delx)
 
-        misc.savedata(f, (t, u[0], u[1]))
+        misc.savedata(f, t, u[0], u[1])
         tstep = 1
         while tstep < timesteps:
             k1 = calcRHS(u, delx, xpoints, boundaryCondition)
@@ -72,13 +72,13 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
             # Advance time
             tstep = tstep + 1
             t = t + delt
-            misc.savedata(f, (t, u[0], u[1]))
+            misc.savedata(f, t, u[0], u[1])
 
     else:
         # Ghost Points according to boundary conditions:
         boundaryConditions(u, "advection", delx)
 
-        misc.savedata(f, (t, u[0], u[1]))
+        misc.savedata(f, t, u[0], u[1])
         phi_old = np.zeros((2, 2))
         phi_old[1, 0] = u[0, 1]
         phi_old[1, 1] = u[0, -2]
@@ -96,7 +96,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
 
         # Advance time
         t = t + delt
-        misc.savedata(f, (t, u[0], u[1]))
+        misc.savedata(f, t, u[0], u[1])
 
         tstep = 2
         while tstep < timesteps:
@@ -114,7 +114,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
 
             # Advance time
             t = t + delt
-            misc.savedata(f, (t, u[0], u[1]))
+            misc.savedata(f, t, u[0], u[1])
             tstep = tstep + 1
 
 
