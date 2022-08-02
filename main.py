@@ -30,7 +30,7 @@ piinit = funcsandder.dergaus(xarray, 0.5, 0.05)
 # phiinit[int(-x0 * (xpoints - 1) / (xmax - x0)): int((1-x0) * (xpoints - 1) / (xmax - x0) + 1)] = funcsandder.s1(np.linspace(0, 1, int((xpoints - 1) / (xmax - x0) + 1)))
 
 # Boundary condition
-boundaryCondition = "FDstencil"
+boundaryCondition = "advection"
 
 # read data
 fileName = "calculateddata.txt"
