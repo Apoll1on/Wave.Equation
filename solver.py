@@ -8,18 +8,22 @@ def boundaryConditions(u, boundaryCondition, delx, alpha=1, phi_old_left=0, phi_
         u[:, -1] = u[:, 2]
         u[:, 0] = u[:, -3]
     elif boundaryCondition == "extrapolation":
-        u[:, -1] = u[:, -2] + (u[:, -2] - u[:, -3])
-        u[:, 0] = u[:, 1] + (u[:, 1] - u[:, 2])
+        u[:, -1] = 2 * u[:, -2] - u[:, -3]
+        u[:, 0] = 2 * u[:, 1]- u[:, 2]
     elif boundaryCondition == "advection":
+        u[:, -1] = 2 * u[:, -2] - u[:, -3]
+        u[:, 0] = 2 * u[:, 1] - u[:, 2]
+        u[1, 1] = (u[0, 2] - u[0,0]) / (2 * delx)
+        u[1, -2] = (u[0, -3] - u[0, -1]) / (2 * delx)
+    elif boundaryCondition == "FDstencil":
         u[0, 0] = u[0, 2] - 2 * delx * u[1, 1]
         u[0, -1] = u[0, -3] - 2 * delx * u[1, -2]
-        u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
-        u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
-    elif boundaryCondition == "FDstencil":
-        u[0, 0] = (alpha * (2 * u[0, 1] - u[0, 2]) + u[0, 2] + (2 * phi_old_left - 2 * u[0, 1]) / alpha) / (alpha + 1)
-        u[0, -1] = (alpha * (2 * u[0, -2] - u[0, -3]) + u[0, -3] + (2 * phi_old_right - 2 * u[0, -2]) / alpha) / (alpha + 1)
-        u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
-        u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
+        u[1, -1] = 2 * u[1, -2] - u[1, -3]
+        u[1, 0] = 2 * u[1, 1] - u[1, 2]
+        # u[0, 0] = (alpha * (2 * u[0, 1] - u[0, 2]) + u[0, 2] + (2 * phi_old_left - 2 * u[0, 1]) / alpha) / (alpha + 1)
+        # u[0, -1] = (alpha * (2 * u[0, -2] - u[0, -3]) + u[0, -3] + (2 * phi_old_right - 2 * u[0, -2]) / alpha) / (alpha + 1)
+        # u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
+        # u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
 
 
 def calcRHS(u, delx, xpoints, boundaryCondition, alpha=1, phi_old_left=0, phi_old_right=0):
