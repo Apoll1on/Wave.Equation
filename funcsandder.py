@@ -63,6 +63,9 @@ def Df3DX(x):
 def Ds1DX(x):
     return 12 * np.pi * np.cos(12 * np.pi * x)
 
+def D2s1DX2(x):
+    return -144 * np.pi * np.pi * np.sin(12 * np.pi * x)
+
 
 def D2s1D2X(x):
     return -12 * 12 * np.pi * np.pi * np.sin(12 * np.pi * x)
@@ -81,4 +84,4 @@ def gausswave(xarray, mu, sigma):
 
 
 def dergaus(xarray, mu, sigma):
-    return (xarray - mu) * np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma * sigma * sigma)
+    return - (xarray - mu) * np.exp(-(xarray - mu) * (xarray - mu) / (2 * sigma * sigma)) / (np.sqrt(2 * np.pi) * sigma * sigma * sigma)

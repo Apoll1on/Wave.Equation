@@ -12,37 +12,39 @@ def stabtest(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryC
     fig, ax = plt.subplots(2, 1)
     c = plt.get_cmap('gist_rainbow')
     n = len(linestoread)
+    print(linestoread)
     for i in range(n):
         # print("Phi " + str(i) + " :")
         # print(np.mean(phiarray[i]))
         # print("Pi " + str(i) + " :")
         # print(np.mean(piarray[i]))
-        ax[0].plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'), color=c(i / (n - 1)))
-        ax[1].plot(xarray, piarray[i, :], label=format(float(times[i]), '.4f'), color=c(i / (n - 1)))
+        ax[0].plot(xarray, phiarray[i, :], label=format(i * alpha * timesteps / ((len(linestoread) - 1) * (xpoints - 1)), '.2f'), color=c(i / (n - 1))) #
+        ax[1].plot(xarray, piarray[i, :], label=format(i * alpha * timesteps / ((len(linestoread) - 1) * (xpoints - 1)), '.2f'), color=c(i / (n - 1)))
 
-    ax[0].set_title('phi')
-    ax[1].set_title('pi')
+    ax[0].set_title('$\phi$')
+    ax[1].set_title('$\Pi$')
     ax[0].legend()
     ax[1].legend()
+    fig.tight_layout()
     plt.show()
 
 
-# plot q over time for every timestep
+# plot Q over time for every timestep
 def convergence(x0, xmax, xpoints, t0, timesteps, alpha,
                 phiinit, piinit, boundaryCondition, fileName, linestoread, periods):
     timesteps = periods * (xpoints - 1) / alpha
     linestoread = [0]
-    for i in range(1, periods + 1):
-        linestoread.append(int(i * (xpoints - 1)))
+    for i in range(1, int(periods/10 + 1)):
+        linestoread.append(int(10 * i * (xpoints - 1)))
     xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
                                                       phiinit, piinit, boundaryCondition, fileName, linestoread)
     print("alpha", alpha, "\ntimes", times)
     fig, ax = plt.subplots(1)
     for i in range(len(linestoread)):
-        ax.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
+        ax.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.0f'))
 
-    ax.legend()
-    ax.set_title("alpha" + format(float(alpha), '.2f'))
+    ax.legend(loc='upper left')
+    #ax.set_title("alpha" + format(float(alpha), '.2f'))
     plt.show()
 
 
@@ -63,11 +65,11 @@ def selfconvergence(x0, xmax, xpoints, t0, timesteps, alpha,
                                                          boundaryCondition, fileName, linestoread)
 
     fig, ax = plt.subplots(1)
-    ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='h - h/2')  #
-    ax.plot(xarray, 4 * (phiarray2[0][::2] - phiarray4[0][::4]), label='h/2 - h/4')  #
+    ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='$\phi\'^{(h)} - \phi\'^{(h/2)}$')
+    ax.plot(xarray, 4 * (phiarray2[0][::2] - phiarray4[0][::4]), label='$4 (\phi\'^{(h/2)} - \phi\'^{(h/4)})$', linestyle='dashed')
     # ax.plot(xarray, phiarray[0], label = 'h')
     # ax.plot(xarray, phiarray2[0][::2], label = 'h/2')
     # ax.plot(xarray, phiarray4[0][::4], label = 'h/4')
 
-    ax.legend()
+    ax.legend(loc='upper left')
     plt.show()
