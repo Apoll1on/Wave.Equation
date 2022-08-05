@@ -3,17 +3,18 @@ import a10
 import funcsandder
 import numpy as np
 import testa10ram
+import a8
 
 
 
 #xsteps
-x0=-50
+x0=-200
 xmax=200
-xpoints=5001
+xpoints=2000
 
 
 #timesteps
-periods=1500
+periods=200
 timesteps=periods*1000#number of timesteps
 t0=0 #starting time
 
@@ -23,13 +24,13 @@ alpha=1
 
 #Initial conditions
 xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
-phiinit=funcsandder.gausswave(xarray,-40.,0.1)#phi
-piinit=funcsandder.dergaus(xarray,-40,0.1)#pi
+phiinit=funcsandder.gausswave(xarray,150,3)#phi
+piinit=-funcsandder.dergaus(xarray,150,3)#pi
 # phiinit = funcsandder.s1(xarray)
 # piinit=np.zeros(xpoints,dtype=np.double)
 
 #Boundary condition
-boundaryCondition="extrapolation"
+boundaryCondition="FDstencil"
 
 #read data
 fileName="C:\\Users\\Programmieren\\PycharmProjects\\Wave.Equation\\calculateddata.txt"
@@ -42,5 +43,7 @@ for i in range(1, periods):
 
 # a8.stabtest(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
 
-#testa10ram.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
-testa10ram.plotten(xpoints,xarray,linestoread,fileName)
+# testa10ram.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
+# testa10ram.plotten(xpoints,xarray,linestoread,fileName)
+
+a8.convtestadvfd(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)

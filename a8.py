@@ -4,6 +4,23 @@ import solver
 from matplotlib import pyplot as plt
 
 
+def convtestadvfd(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
+    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
+                                                      phiinit, piinit, "advection", fileName, linestoread)
+    fig, ax = plt.subplots(2, 1)
+    ax[0].plot(xarray,phiarray[0,:],label="t=0", color="black")
+    ax[0].plot(xarray, phiarray[int(xpoints*0.25), :], label="t=0", color="blue")
+    ax[0].plot(xarray, phiarray[int(xpoints*0.5), :], label="t=0", color="red")
+    ax[0].plot(xarray, phiarray[int(xpoints*0.75), :], label="t=0", color="green")
+
+    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
+                                                      phiinit, piinit, "fdstencil", fileName, linestoread)
+    fig, ax = plt.subplots(2, 1)
+    ax[1].plot(xarray, phiarray[0, :], label="t=0", color="black")
+    ax[1].plot(xarray, phiarray[int(xpoints * 0.25), :], label="t=0", color="blue")
+    ax[1].plot(xarray, phiarray[int(xpoints * 0.5), :], label="t=0", color="red")
+    ax[1].plot(xarray, phiarray[int(xpoints * 0.75), :], label="t=0", color="green")
+
 def stabtest(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
     xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
                                                       phiinit, piinit, boundaryCondition, fileName, linestoread)
@@ -73,3 +90,4 @@ def selfconvergence(x0, xmax, xpoints, t0, timesteps, alpha,
 
     ax.legend(loc='upper left')
     plt.show()
+

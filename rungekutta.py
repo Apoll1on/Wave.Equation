@@ -3,6 +3,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+
+
 def RK4(f: Callable, u0, delt, t0, tmax, fileName: str):
     f = open(fileName, "a")
     f.write("New Run")
@@ -33,17 +35,14 @@ def secondeq(t, x):
 
 
 def a6():
-    fileName = "calculateddata.txt"
-
     x0 = 1
     p0 = 0
-    tsteps = 7500  # 100 per 2pi is good
-    delt = 10 * np.pi / tsteps
-    tmax = 10 * np.pi
-    t0 = 0
+      # 100 per 2pi is good
+    tmax = 150. * np.pi
+    delt = 0.0001
+    tsteps = int(tmax/delt)+1
+    t0 = 0.
 
-    f = open(fileName, "a")
-    f.write("\n\nNew Run")
 
     x = x0
     p = p0
@@ -70,13 +69,10 @@ def a6():
         parray[iter] = p
         tarray[iter] = t
 
-        f.write("\n")
-        f.write("Time: " + str(t) + "  p: " + str(p) + "  x: " + str(x))
 
         t += delt
         iter += 1
 
-    f.close()
 
     cosarray = np.cos(tarray)
     sinarray = np.sin(tarray)
@@ -85,12 +81,18 @@ def a6():
     ax1.plot(xarray, parray)
 
     fig2, ax2 = plt.subplots()
-    ax2.plot(tarray, parray ** 2 + xarray ** 2)
-    ax2.plot(tarray, xarray)
-    ax2.plot(tarray, parray)
+    ax2.plot(tarray[::1000], (1-parray ** 2 - xarray ** 2)[::1000])
+    ax2.set_xlabel("Time in seconds")
+    ax2.set_ylabel("Error for energy conservation 1-p^2-x^2")
+
 
     fig3, ax3 = plt.subplots()
-    ax3.plot(tarray, cosarray - xarray)
-    ax3.plot(tarray, sinarray + parray)
+    ax3.plot(tarray[int(tsteps*0.85)::1000], cosarray[int(tsteps*0.85)::1000] - xarray[int(tsteps*0.85)::1000])
+    ax3.plot(tarray[int(tsteps*0.85)::1000], sinarray[int(tsteps*0.85)::1000] + parray[int(tsteps*0.85)::1000])
+    ax3.set_xlabel("Time in seconds")
+    ax3.set_ylabel('Calculated minus exact solution')
 
     plt.show()
+
+
+a6()

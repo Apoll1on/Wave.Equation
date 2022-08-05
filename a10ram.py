@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import misc
 import os
@@ -5,7 +7,7 @@ import os
 
 def boundaryConditions(k, boundaryCondition, delx):
     """Applying different boundary conditions."""
-    #We only used extrapolation here so far because the boundaries do not really matter anyway
+    # We only used extrapolation here so far because the boundaries do not really matter anyway
     if boundaryCondition == "periodic":
         k[:, -1] = k[:, 2]
         k[:, 0] = k[:, -3]
@@ -15,7 +17,10 @@ def boundaryConditions(k, boundaryCondition, delx):
     elif boundaryCondition == "advection":
         pass
     elif boundaryCondition == "FDstencil":
-        pass
+        k[0, 0] = k[0, 2] - 2 * delx * k[1, 1]
+        k[0, -1] = k[0, -3] - 2 * delx * k[1, -2]
+        k[1, -1] = k[1, -2] + (k[1, -2] - k[1, -3])
+        k[1, 0] = k[1, 1] + (k[1, 1] - k[1, 2])
 
 
 def PTpotential(xarray):
@@ -23,14 +28,13 @@ def PTpotential(xarray):
     return 0.15 / ((np.cosh(0.18 * (xarray) + 0.43)) * (np.cosh(0.18 * (xarray) + 0.43)))
 
 
-
 def calcRHS(k, delx, xpoints, xarray, boundaryCondition, pot):
     """calculating the RHS of equation du/dt=F(u) for RK4 step"""
     result = np.zeros((2, xpoints + 2), dtype=np.double)
     result[0, 1:-1] = k[1, 1:-1]
 
-    # This is the part where the potential comes into play and I hope I implented it correctly
-    result[1, 1:-1] = (k[0, 2:] - 2 * k[0, 1:-1] + k[0, 0:-2]) / (delx * delx) - pot  # subtracting the potential
+    # This is the part where the potential comes into play and I hope I implemented it correctly
+    result[1, 1:-1] = (k[0, 2:] - 2 * k[0, 1:-1] + k[0, 0:-2]) / (delx * delx) - pot * k[0, 1:-1] # subtracting the potential
     boundaryConditions(result, boundaryCondition, delx)
     return result
 
@@ -38,6 +42,7 @@ def calcRHS(k, delx, xpoints, xarray, boundaryCondition, pot):
 def solving(x0, xmax, xpoints, t0, timesteps, alpha,
             phiinit, piinit, boundaryCondition, fileName, linestoread):
     """Here is where everything is put together. First initial data is set up and then the time stepping loop begins."""
+    starttime=time.time()
     t = t0
     delt = alpha / (xpoints - 1)
     delx = (xmax - x0) / (xpoints - 1)
@@ -45,6 +50,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
 
     # calc. potential to reuse later
     pot = PTpotential(xarray)
+
 
     # save data in array to plot it later:
     phiarray = np.zeros((len(linestoread), xpoints + 2), dtype=np.double)
@@ -85,6 +91,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
 
         boundaryConditions(u, boundaryCondition, delx)
 
+
         # Advance time
         t = t + delt
 
@@ -98,6 +105,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
 
         tstep = tstep + 1
 
+    print(time.time()-starttime)
     if os.path.exists(fileName):
         os.remove(fileName)
     f = open(fileName, "a")
