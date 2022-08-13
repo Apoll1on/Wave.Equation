@@ -55,7 +55,7 @@ def readfromshortfile(fileName, xpoints, lines):
     a = len(lines)
     phiarray = np.zeros((len(lines), xpoints), dtype=np.double)
     piarray = np.zeros((len(lines), xpoints), dtype=np.double)
-    times = []
+    times = np.zeros(len(lines), dtype=np.double)
 
     timeindex = 0
     phiindex = range(2, 2 + xpoints)
@@ -65,7 +65,7 @@ def readfromshortfile(fileName, xpoints, lines):
     for line in readLines:
 
         spl = line.split("#")
-        times.append(spl[timeindex])
+        times[index] = spl[timeindex]
         index2 = 0
         index3 = 0
         for i in phiindex:

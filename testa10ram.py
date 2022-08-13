@@ -8,7 +8,7 @@ import time
 import a10ram
 import numpy as np
 
-divider=200
+divider = 100
 
 def calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread):
     start_time = time.time()
@@ -42,7 +42,7 @@ def calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition
     ax.plot(xarray, 0.15 / ((np.cosh(0.18 * (xarray) + 0.43)) * (np.cosh(0.18 * (xarray) + 0.43))), color="black")
     for i in range(int(n / divider)):
         ax.plot(xarray, phiarray[divider * i, :],
-                   label=format(float(times[divider * i]), '.4f'), color=c(divider * i / (n - 1)))
+                label=format(float(times[divider * i]), '.4f'), color=c(divider * i / (n - 1)))
     ax.legend()
     ax.set_title('phi')
     plt.show()
@@ -50,38 +50,36 @@ def calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition
     fig, ax = plt.subplots()
     ax2 = ax.twinx()
     ax2.set_ylim(pow(10, -7), pow(10, 0))
-    ax.plot(times[::10], phiarray[::10, int(xpoints * 0.75)], color="blue")
-    ax2.semilogy(times[::10], np.absolute(phiarray[::10, int(xpoints * 0.75)]), color="red")
+    ax.plot(times[::], phiarray[::, int(xpoints * 0.75)], color="blue")
+    ax2.semilogy(times[::], np.absolute(phiarray[::, int(xpoints * 0.75)]), color="red")
     ax.xaxis.set_major_locator(MultipleLocator(100))
     ax.xaxis.set_major_formatter(FormatStrFormatter('% 1.0f'))
-    ax.xaxis.set_minor_locator(MultipleLocator(20))
+    ax.xaxis.set_minor_locator(MultipleLocator(50))
     ax.xaxis.set_minor_formatter(FormatStrFormatter('% 1.0f'))
-    ax.set_xlim(120)
-    ax.set_xlabel("Time t")
+    ax.set_xlim(180, 550)
+    ax.set_xlabel("Time")
     ax.set_ylabel(r'$\Phi$', color="blue")
     ax2.set_ylabel(r'|$\Phi$|', color="red")
     plt.show()
     print(times)
 
 def plotten(xpoints,xarray,linestoread,fileName):
-
     times, phiarray, piarray = misc.readfromshortfile(fileName, xpoints, lines=linestoread)
     fig, ax = plt.subplots()
     ax2 = ax.twinx()
     ax2.set_ylim(pow(10, -7), pow(10, 0))
-    ax.plot(times[::10], phiarray[::10, int(xpoints * 0.75)], color="blue")
-    ax2.semilogy(times[::10], np.absolute(phiarray[::10, int(xpoints * 0.75)]), color="red")
+    ax.plot(times[::], phiarray[::, int(xpoints * 0.75)], color="blue")
+    ax2.semilogy(times[::], np.absolute(phiarray[::, int(xpoints * 0.75)]), color="red")
     ax.xaxis.set_major_locator(MultipleLocator(100))
     ax.xaxis.set_major_formatter(FormatStrFormatter('% 1.0f'))
-    ax.xaxis.set_minor_locator(MultipleLocator(20))
+    ax.xaxis.set_minor_locator(MultipleLocator(50))
     ax.xaxis.set_minor_formatter(FormatStrFormatter('% 1.0f'))
-    ax.set_xlim(120)
-    ax.set_xlabel("Time t")
+    ax.set_xlim(180, 550)
+    ax.set_xlabel("Time")
     ax.set_ylabel(r'$\Phi$', color="blue")
     ax2.set_ylabel(r'|$\Phi$|', color="red")
     plt.show()
     print(times)
-
 
     fig, ax = plt.subplots()
     c = plt.get_cmap('gist_rainbow')

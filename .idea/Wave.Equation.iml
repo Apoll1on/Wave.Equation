@@ -3,7 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$USER_HOME$/Desktop/Python/Wave.Equation" />
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.10 (Wave Equation)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

@@ -1,6 +1,7 @@
 from typing import Callable
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import ticker
 
 
 
@@ -81,16 +82,19 @@ def a6():
     ax1.plot(xarray, parray)
 
     fig2, ax2 = plt.subplots()
-    ax2.plot(tarray[::1000], (1-parray ** 2 - xarray ** 2)[::1000])
-    ax2.set_xlabel("Time in seconds")
+    ax2.plot(tarray[::1000], (1 - parray ** 2 - xarray ** 2)[::1000])
+    ax2.set_xlabel("Time t")
     ax2.set_ylabel("Error for energy conservation 1-p^2-x^2")
 
-
     fig3, ax3 = plt.subplots()
-    ax3.plot(tarray[int(tsteps*0.85)::1000], cosarray[int(tsteps*0.85)::1000] - xarray[int(tsteps*0.85)::1000])
-    ax3.plot(tarray[int(tsteps*0.85)::1000], sinarray[int(tsteps*0.85)::1000] + parray[int(tsteps*0.85)::1000])
-    ax3.set_xlabel("Time in seconds")
-    ax3.set_ylabel('Calculated minus exact solution')
+    ax3.plot(tarray[int(tsteps * 0.85)::1000], cosarray[int(tsteps * 0.85)::1000] - xarray[int(tsteps * 0.85)::1000])
+    ax3.plot(tarray[int(tsteps * 0.85)::1000], sinarray[int(tsteps * 0.85)::1000] + parray[int(tsteps * 0.85)::1000])
+    ax3.set_xlabel("Time t")
+    ax3.set_ylabel("Calculated minus exact solution")
+    formatter = ticker.ScalarFormatter(useMathText=True)
+    formatter.set_scientific(True)
+    formatter.set_powerlimits((-1, 1))
+    ax3.yaxis.set_major_formatter(formatter)
 
     plt.show()
 

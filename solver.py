@@ -26,7 +26,7 @@ def boundaryConditions(u, boundaryCondition, delx, alpha=1, phi_old_left=0, phi_
         # u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
 
 
-def calcRHS(u, delx, xpoints, boundaryCondition, alpha=1, phi_old_left=0, phi_old_right=0):
+def calcRHS(u, delx, xpoints, boundaryCondition, alpha, phi_old_left=0, phi_old_right=0):
     result = np.zeros((2, xpoints + 2), dtype=np.double)
     result[0, 1:-1] = u[1, 1:-1]
     result[1, 1:-1] = (u[0, 2:] - 2 * u[0, 1:-1] + u[0, 0:-2]) / (delx * delx)
@@ -61,10 +61,10 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
         misc.savedata(f, t, u[0], u[1])
         tstep = 1
         while tstep < timesteps:
-            k1 = calcRHS(u, delx, xpoints, boundaryCondition)
-            k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition)
-            k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition)
-            k4 = calcRHS(u + delt * k3, delx, xpoints, boundaryCondition)
+            k1 = calcRHS(u, delx, xpoints, boundaryCondition, alpha)
+            k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, boundaryCondition, alpha)
+            k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, boundaryCondition, alpha)
+            k4 = calcRHS(u + delt * k3, delx, xpoints, boundaryCondition, alpha)
 
             u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
 
@@ -85,10 +85,10 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
         phi_old[1, 0] = u[0, 1]
         phi_old[1, 1] = u[0, -2]
 
-        k1 = calcRHS(u, delx, xpoints, "advection")
-        k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, "advection")
-        k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, "advection")
-        k4 = calcRHS(u + delt * k3, delx, xpoints, "advection")
+        k1 = calcRHS(u, delx, xpoints, "advection", alpha, phi_old[1, 0], phi_old[1, 1])
+        k2 = calcRHS(u + 0.5 * delt * k1, delx, xpoints, "advection", alpha, phi_old[1, 0], phi_old[1, 1])
+        k3 = calcRHS(u + 0.5 * delt * k2, delx, xpoints, "advection", alpha, phi_old[1, 0], phi_old[1, 1])
+        k4 = calcRHS(u + delt * k3, delx, xpoints, "advection", alpha, phi_old[1, 0], phi_old[1, 1])
 
         u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
         phi_old[0, 0] = u[0, 1]
