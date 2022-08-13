@@ -42,6 +42,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
     delt = alpha / (xpoints - 1)
     delx = (xmax - x0) / (xpoints - 1)
     xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
+    print(xarray)
 
     # File to write Data to
     if os.path.exists(fileName):

@@ -12,18 +12,22 @@ def boundaryConditions(u, boundaryCondition, delx, alpha=1, phi_old_left=0, phi_
         u[:, -1] = u[:, 2]
         u[:, 0] = u[:, -3]
     elif boundaryCondition == "extrapolation":
-        u[:, -1] = u[:, -2] + (u[:, -2] - u[:, -3])
-        u[:, 0] = u[:, 1] + (u[:, 1] - u[:, 2])
+        u[:, -1] = 2 * u[:, -2] - u[:, -3]
+        u[:, 0] = 2 * u[:, 1]- u[:, 2]
     elif boundaryCondition == "advection":
+        u[:, -1] = 2 * u[:, -2] - u[:, -3]
+        u[:, 0] = 2 * u[:, 1] - u[:, 2]
+        u[1, 1] = (u[0, 2] - u[0,0]) / (2 * delx)
+        u[1, -2] = (u[0, -3] - u[0, -1]) / (2 * delx)
+    elif boundaryCondition == "FDstencil":
         u[0, 0] = u[0, 2] - 2 * delx * u[1, 1]
         u[0, -1] = u[0, -3] - 2 * delx * u[1, -2]
-        u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
-        u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
-    elif boundaryCondition == "FDstencil":
-        u[0, 0] = (alpha * (2 * u[0, 1] - u[0, 2]) + u[0, 2] + (2 * phi_old_left - 2 * u[0, 1]) / alpha) / (alpha + 1)
-        u[0, -1] = (alpha * (2 * u[0, -2] - u[0, -3]) + u[0, -3] + (2 * phi_old_right - 2 * u[0, -2]) / alpha) / (alpha + 1)
-        u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
-        u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
+        u[1, -1] = 2 * u[1, -2] - u[1, -3]
+        u[1, 0] = 2 * u[1, 1] - u[1, 2]
+        # u[0, 0] = (alpha * (2 * u[0, 1] - u[0, 2]) + u[0, 2] + (2 * phi_old_left - 2 * u[0, 1]) / alpha) / (alpha + 1)
+        # u[0, -1] = (alpha * (2 * u[0, -2] - u[0, -3]) + u[0, -3] + (2 * phi_old_right - 2 * u[0, -2]) / alpha) / (alpha + 1)
+        # u[1, -1] = u[1, -2] + (u[1, -2] - u[1, -3])
+        # u[1, 0] = u[1, 1] + (u[1, 1] - u[1, 2])
 
 
 def calcRHS(u, delx, xpoints, boundaryCondition, alpha=1, phi_old_left=0, phi_old_right=0):
@@ -68,6 +72,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
             u = u + delt * (k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6)
 
             boundaryConditions(u, boundaryCondition, delx)
+            # print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
 
             # Advance time
             tstep = tstep + 1
@@ -93,6 +98,7 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
         phi_old[0, 1] = u[0, -2]
 
         boundaryConditions(u, "advection", delx)
+        print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
 
         # Advance time
         t = t + delt
@@ -112,6 +118,8 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
             phi_old[0, 0] = u[0, 1]
             phi_old[0, 1] = u[0, -2]
 
+            # print(u[0, 1], u[0, -2], u[1, 1], u[1, -2])
+
             # Advance time
             t = t + delt
             misc.savedata(f, t, u[0], u[1])
@@ -126,6 +134,23 @@ def solving(x0, xmax, xpoints, t0, timesteps, alpha,
 
 #### a8 file:
 
+def convtestadvfd(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
+    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
+                                                      phiinit, piinit, "advection", fileName, linestoread)
+    fig, ax = plt.subplots(2, 1)
+    ax[0].plot(xarray,phiarray[0,:],label="t=0", color="black")
+    ax[0].plot(xarray, phiarray[int(xpoints*0.25), :], label="t=0", color="blue")
+    ax[0].plot(xarray, phiarray[int(xpoints*0.5), :], label="t=0", color="red")
+    ax[0].plot(xarray, phiarray[int(xpoints*0.75), :], label="t=0", color="green")
+
+    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
+                                                      phiinit, piinit, "fdstencil", fileName, linestoread)
+    fig, ax = plt.subplots(2, 1)
+    ax[1].plot(xarray, phiarray[0, :], label="t=0", color="black")
+    ax[1].plot(xarray, phiarray[int(xpoints * 0.25), :], label="t=0", color="blue")
+    ax[1].plot(xarray, phiarray[int(xpoints * 0.5), :], label="t=0", color="red")
+    ax[1].plot(xarray, phiarray[int(xpoints * 0.75), :], label="t=0", color="green")
+
 def stabtest(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
     xarray, times, phiarray, piarray = solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
                                                       phiinit, piinit, boundaryCondition, fileName, linestoread)
@@ -134,36 +159,39 @@ def stabtest(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryC
     fig, ax = plt.subplots(2, 1)
     c = plt.get_cmap('gist_rainbow')
     n = len(linestoread)
+    print(linestoread)
     for i in range(n):
         # print("Phi " + str(i) + " :")
         # print(np.mean(phiarray[i]))
         # print("Pi " + str(i) + " :")
         # print(np.mean(piarray[i]))
-        ax[0].plot(xarray, phiarray[i, :], label='t: ' + format(float(times[i]), '.4f'), color=c(i / (n - 1)))
-        ax[1].plot(xarray, piarray[i, :], label='t: ' + format(float(times[i]), '.4f'), color=c(i / (n - 1)))
+        ax[0].plot(xarray, phiarray[i, :], label=format(i * alpha * timesteps / ((len(linestoread) - 1) * (xpoints - 1)), '.2f'), color=c(i / (n - 1))) #
+        ax[1].plot(xarray, piarray[i, :], label=format(i * alpha * timesteps / ((len(linestoread) - 1) * (xpoints - 1)), '.2f'), color=c(i / (n - 1)))
 
-    ax[0].set_title('Phi')
-    ax[1].set_title('Pi')
+    ax[0].set_title('$\phi$')
+    ax[1].set_title('$\Pi$')
     ax[0].legend()
     ax[1].legend()
+    fig.tight_layout()
     plt.show()
 
 
+# plot Q over time for every timestep
 def convergence(x0, xmax, xpoints, t0, timesteps, alpha,
                 phiinit, piinit, boundaryCondition, fileName, linestoread, periods):
     timesteps = periods * (xpoints - 1) / alpha
     linestoread = [0]
-    for i in range(1, periods + 1):
-        linestoread.append(int(i * (xpoints - 1)))
+    for i in range(1, int(periods/10 + 1)):
+        linestoread.append(int(10 * i * (xpoints - 1)))
     xarray, times, phiarray, piarray = solving(x0, xmax, xpoints, t0, timesteps + 2, alpha,
                                                       phiinit, piinit, boundaryCondition, fileName, linestoread)
     print("alpha", alpha, "\ntimes", times)
     fig, ax = plt.subplots(1)
     for i in range(len(linestoread)):
-        ax.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.4f'))
+        ax.plot(xarray, phiarray[i, :], label=format(float(times[i]), '.0f'))
 
-    ax.legend()
-    ax.set_title("alpha" + format(float(alpha), '.2f'))
+    ax.legend(loc='upper left')
+    #ax.set_title("alpha" + format(float(alpha), '.2f'))
     plt.show()
 
 
@@ -184,13 +212,13 @@ def selfconvergence(x0, xmax, xpoints, t0, timesteps, alpha,
                                                          boundaryCondition, fileName, linestoread)
 
     fig, ax = plt.subplots(1)
-    ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='h - h/2')  #
-    ax.plot(xarray, 4 * (phiarray2[0][::2] - phiarray4[0][::4]), label='h/2 - h/4')  #
+    ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='$\phi\'^{(h)} - \phi\'^{(h/2)}$')
+    ax.plot(xarray, 4 * (phiarray2[0][::2] - phiarray4[0][::4]), label='$4 (\phi\'^{(h/2)} - \phi\'^{(h/4)})$', linestyle='dashed')
     # ax.plot(xarray, phiarray[0], label = 'h')
     # ax.plot(xarray, phiarray2[0][::2], label = 'h/2')
     # ax.plot(xarray, phiarray4[0][::4], label = 'h/4')
 
-    ax.legend()
+    ax.legend(loc='upper left')
     plt.show()
 
 
@@ -202,11 +230,11 @@ def selfconvergence(x0, xmax, xpoints, t0, timesteps, alpha,
 # xsteps
 x0 = 0
 xmax = 1
-xpoints = 1001
+xpoints = 501
 
 # timesteps
-timesteps = 1500  # number of timesteps
-tcount = 6  # Number of lines to read out/plot
+timesteps = 350  # number of timesteps, factor has to be the same as in " #read data"
+tcount = 7 # Number of lines to read out/plot
 t0 = 0  # starting time
 
 # alpha
@@ -216,22 +244,22 @@ alpha = 1
 xarray = np.array(np.linspace(x0, xmax, xpoints), dtype=np.double)
 phiinit = funcsandder.gausswave(xarray, 0.5, 0.05)
 piinit = funcsandder.dergaus(xarray, 0.5, 0.05)
+
 # phiinit = funcsandder.s1(xarray)
+# piinit = funcsandder.Ds1DX(xarray)
 # piinit = np.zeros(xpoints)
-
-
-# phiinit = np.zeros(xpoints)
 # phiinit[int(-x0 * (xpoints - 1) / (xmax - x0)): int((1-x0) * (xpoints - 1) / (xmax - x0) + 1)] = funcsandder.s1(np.linspace(0, 1, int((xpoints - 1) / (xmax - x0) + 1)))
 
 # Boundary condition
-boundaryCondition = "advection"
+boundaryCondition = "extrapolation"
 
 # read data
 fileName = "calculateddata.txt"
 linestoread = [0]
 for i in range(1, tcount + 1):
     linestoread.append(i * timesteps / tcount)
+print(linestoread)
 
-stabtest(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread)
-# convergence(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread, 15) # Last, additional parameter is for number of periods
-# selfconvergence(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread)
+convergence(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread, 10)
+
+# plot()
