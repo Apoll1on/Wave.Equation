@@ -8,12 +8,12 @@ import a8
 
 # xsteps
 x0 = 0
-xmax = 1
-xpoints = 2001
+xmax = 10
+xpoints = 4001
 
 # timesteps
-timesteps = 1000  # number of timesteps, factor has to be the same as in " #read data"
-tcount = 10  # Number of lines to read out/plot
+timesteps = 60000  # number of timesteps, factor has to be the same as in " #read data"
+tcount = 2000  # Number of lines to read out/plot
 t0 = 0  # starting time
 
 # alpha
@@ -39,7 +39,10 @@ for i in range(1, tcount + 1):
     linestoread.append(i * timesteps / tcount)
 print(linestoread)
 
-a8.conv_FD(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread)
+# a8.conv_FD(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread)
+# a8.plotconvfd(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread)
+# a8.compareconv(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread)
+a8.plotcompconv(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread)
 
 # testa10new.calcplot(x0,xmax,xpoints,t0,timesteps,alpha,phiinit,piinit,boundaryCondition,fileName,linestoread)
 # testa10new.plotten(xpoints,xarray,linestoread,fileName)

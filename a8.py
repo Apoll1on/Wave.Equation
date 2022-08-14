@@ -2,39 +2,14 @@ import numpy as np
 import funcsandder
 import solver
 from matplotlib import pyplot as plt
-
-
+from matplotlib.ticker import (MultipleLocator,
+                               FormatStrFormatter,
+                               AutoMinorLocator)
+import misc
+import solvernew
 
 
 def selfconv_FD(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
-    func_phiint = funcsandder.gausswave
-    func_piint = funcsandder.dergaus
-
-    linestoread = [timesteps - 1]
-    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, 0.1,
-                                                      func_phiint(np.linspace(x0, xmax, xpoints), 0.5, 0.05), func_piint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
-                                                      boundaryCondition, fileName,
-                                                      linestoread)
-    xarray2, times, phiarray2, piarray2 = solver.solving(x0, xmax, 2 * xpoints - 1, t0, timesteps + 2, 0.2,
-                                                         func_phiint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5, 0.05),
-                                                         func_piint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5, 0.05),
-                                                         boundaryCondition, fileName, linestoread)
-    xarray4, times, phiarray4, piarray4 = solver.solving(x0, xmax, 4 * (xpoints - 1) + 1, t0, timesteps + 2, 0.4,
-                                                         func_phiint(np.linspace(x0, xmax, 4 * (xpoints - 1) + 1), 0.5, 0.05),
-                                                         func_piint(np.linspace(x0, xmax, 4 * (xpoints - 1) + 1), 0.5, 0.05),
-                                                         boundaryCondition, fileName, linestoread)
-
-    fig, ax = plt.subplots(1)
-    ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='$\phi\'^{(h)} - \phi\'^{(h/2)}$')
-    ax.plot(xarray, 4 * (phiarray2[0][::2] - phiarray4[0][::4]), label='$4 (\phi\'^{(h/2)} - \phi\'^{(h/4)})$', linestyle='dashed')
-    # ax.plot(xarray, (phiarray[0]), label='$\phi\'^{(h)} - \phi\'^{(h/2)}$')
-    # ax.plot(xarray, func_phiint(np.linspace(x0, xmax, xpoints), 0.5, 0.05), label='$4 (\phi\'^{(h/2)} - \phi\'^{(h/4)})$', linestyle='dashed')
-
-    ax.legend(loc='upper left')
-    plt.show()
-
-
-def conv_FD(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
     func_phiint = funcsandder.gausswave
     func_piint = funcsandder.dergaus
 
@@ -48,37 +23,161 @@ def conv_FD(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCo
                                                          func_phiint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5, 0.05),
                                                          func_piint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5, 0.05),
                                                          boundaryCondition, fileName, linestoread)
+    xarray4, times, phiarray4, piarray4 = solver.solving(x0, xmax, 4 * (xpoints - 1) + 1, t0, timesteps + 2, 0.4,
+                                                         func_phiint(np.linspace(x0, xmax, 4 * (xpoints - 1) + 1), 0.5, 0.05),
+                                                         func_piint(np.linspace(x0, xmax, 4 * (xpoints - 1) + 1), 0.5, 0.05),
+                                                         boundaryCondition, fileName, linestoread)
 
     fig, ax = plt.subplots(1)
-    ax.plot(xarray, funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
-                                                     (timesteps - 1) * 0.1 / (xpoints - 1)) - phiarray[0],
-            label='$\phi\'^{(h)} - \phi\'^{(h/2)}$')
-    ax.plot(xarray, (funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
-                                                      (timesteps - 1) * 0.1 / (xpoints - 1)) - phiarray2[0][::2]),
-            label='$(\phi\'^{(h/2)} - \phi\'^{(h/4)})$', linestyle='dashed')
-
-    top = np.sqrt(np.sum((funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
-                                                           (timesteps - 1) * 0.1 / (xpoints - 1)) - phiarray[0]) *
-                         (funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
-                                                           (timesteps - 1) * 0.1 / (xpoints - 1)) - phiarray[0])))
-    bottom = np.sqrt(np.sum((funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
-                                                              (timesteps - 1) * 0.1 / (xpoints - 1)) - phiarray2[0][
-                                                                                                       ::2]) *
-                            (funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
-                                                              (timesteps - 1) * 0.1 / (xpoints - 1)) - phiarray2[0][
-                                                                                                       ::2])))
-    print(top / bottom)
-    ax.plot(xarray, (funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
-                                                      (timesteps - 1) * 0.1 / (xpoints - 1)) - phiarray[0]) / (
-                        funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
-                                                         (timesteps - 1) * 0.1 / (xpoints - 1)) - phiarray2[0][::2]))
-
-    # ax.plot(xarray, func_phiint(np.linspace(x0, xmax, xpoints), 0.5, 0.05), label='init')
-    # ax.plot(xarray, (phiarray[0]), label='num')
-    # ax.plot(xarray, funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05, timesteps * 0.1 / (xpoints - 1)), label='anal', linestyle='dashed')
+    ax.plot(xarray, (phiarray[0] - phiarray2[0][::2]), label='$\phi\'^{(h)} - \phi\'^{(h/2)}$')
+    ax.plot(xarray, 4 * (phiarray2[0][::2] - phiarray4[0][::4]), label='$4 (\phi\'^{(h/2)} - \phi\'^{(h/4)})$',
+            linestyle='dashed')
+    # ax.plot(xarray, (phiarray[0]), label='$\phi\'^{(h)} - \phi\'^{(h/2)}$')
+    # ax.plot(xarray, func_phiint(np.linspace(x0, xmax, xpoints), 0.5, 0.05), label='$4 (\phi\'^{(h/2)} - \phi\'^{(h/4)})$', linestyle='dashed')
 
     ax.legend(loc='upper left')
     plt.show()
+
+
+def plotconvfd(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
+    xarray = np.linspace(x0, xmax, xpoints)
+    xarray2 = np.linspace(x0, xmax, 2 * xpoints - 1)
+    times, phiarray, piarray = misc.readdata("calch.txt", xpoints, lines=linestoread)
+    times2, phiarray2, piarray2 = misc.readdata("calch2.txt", 2 * xpoints - 1, lines=linestoread)
+    qarray = np.zeros(len(times))
+    fig, ax = plt.subplots(1)
+
+    for i in range(len(times)):
+        top = np.sqrt(np.sum((funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
+                                                               float(times[i])) - phiarray[i]) *
+                             (funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
+                                                               float(times[i])) - phiarray[i])))
+        bottom = np.sqrt(np.sum((funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
+                                                                  float(times[i])) - phiarray2[i, ::2]) *
+                                (funcsandder.gausswave_verschoben(np.linspace(x0, xmax, xpoints), 0.5, 0.05,
+                                                                  float(times[i])) - phiarray2[i, ::2])))
+        qarray[i] = top / bottom
+
+    ax.plot(times[15:], qarray[15:], color="black")
+    ax.xaxis.set_major_locator(MultipleLocator(200))
+    ax.xaxis.set_major_formatter(FormatStrFormatter('% 1.0f'))
+    # ax.xaxis.set_minor_locator(MultipleLocator(200))
+    # ax.xaxis.set_minor_formatter(FormatStrFormatter('% 1.0f'))
+    # ax.set_xlim(180, 550)
+    ax.set_xlabel("Time")
+    ax.set_ylabel(r'$2^p$')
+
+    plt.show()
+
+
+def plotcompconv(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
+    xarray = np.linspace(x0, xmax, xpoints)
+    xarray2 = np.linspace(x0, xmax, 2 * xpoints - 1)
+    timesfd, phiarrayfd, piarrayfd = misc.readfromshortfile("calcfdh.txt", xpoints, lines=linestoread)
+    times2fd, phiarray2fd, piarray2fd = misc.readfromshortfile("calcfdh2.txt", 2 * xpoints - 1, lines=linestoread)
+    qarrayfd = np.zeros(len(timesfd))
+    timesad, phiarrayad, piarrayad = misc.readfromshortfile("calcadh.txt", xpoints, lines=linestoread)
+    times2ad, phiarray2ad, piarray2ad = misc.readfromshortfile("calcadh2.txt", 2 * xpoints - 1, lines=linestoread)
+    qarrayad = np.zeros(len(timesad))
+    timesex, phiarrayex, piarrayex = misc.readfromshortfile("calcexh.txt", xpoints, lines=linestoread)
+    times2ex, phiarray2ex, piarray2ex = misc.readfromshortfile("calcexh2.txt", 2 * xpoints - 1, lines=linestoread)
+    qarrayex = np.zeros(len(timesex))
+    print(timesfd, times2fd, timesad, times2ad, timesex, times2ex)
+
+    for i in range(len(timesfd)):
+        topfd = np.sqrt(
+            np.sum((funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarrayfd[i]) *
+                   (funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarrayfd[i])))
+        bottomfd = np.sqrt(
+            np.sum((funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarray2fd[i, ::2]) *
+                   (funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarray2fd[i, ::2])))
+        qarrayfd[i] = topfd / bottomfd
+
+        topad = np.sqrt(
+            np.sum((funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarrayad[i]) *
+                   (funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarrayad[i])))
+        bottomad = np.sqrt(
+            np.sum((funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarray2ad[i, ::2]) *
+                   (funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarray2ad[i, ::2])))
+        qarrayad[i] = topad / bottomad
+
+        topex = np.sqrt(
+            np.sum((funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarrayex[i]) *
+                   (funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarrayex[i])))
+        bottomex = np.sqrt(
+            np.sum((funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarray2ex[i, ::2]) *
+                   (funcsandder.gausswave_verschoben(xarray, 0.5, 0.05, float(timesfd[i])) - phiarray2ex[i, ::2])))
+        qarrayex[i] = topex / bottomex
+
+    fig, ax = plt.subplots()
+    ax.plot(timesfd[15:], qarrayfd[15:], color="red", label="Characteristics analysis")
+    ax.plot(timesad[15:], qarrayad[15:], color="blue", label="Advection based approach")
+    ax.plot(timesex[15:], qarrayex[15:], color="black", label="Extrapolation")
+    # ax.xaxis.set_major_locator(MultipleLocator(200))
+    # ax.xaxis.set_major_formatter(FormatStrFormatter('% 1.0f'))
+    # ax.xaxis.set_minor_locator(MultipleLocator(200))
+    # ax.xaxis.set_minor_formatter(FormatStrFormatter('% 1.0f'))
+    # ax.set_xlim(180, 550)
+    ax.set_xlabel("Time t")
+    ax.set_ylabel(r'$2^p$')
+    ax.legend()
+
+    plt.show()
+
+
+def compareconv(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
+    func_phiint = funcsandder.gausswave
+    func_piint = funcsandder.dergaus
+
+    # FD
+    xarray, times, phiarray, piarray = solvernew.solving(x0, xmax, xpoints, t0, timesteps + 2, 0.1,
+                                                         func_phiint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
+                                                         func_piint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
+                                                         "FDstencil", "calcfdh.txt", linestoread)
+    xarray2, times, phiarray2, piarray2 = solvernew.solving(x0, xmax, 2 * xpoints - 1, t0, timesteps + 2, 0.2,
+                                                            func_phiint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5,
+                                                                        0.05),
+                                                            func_piint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5,
+                                                                       0.05),
+                                                            "FDstencil", "calcfdh2.txt", linestoread)
+    # adv
+    xarray, times, phiarray, piarray = solvernew.solving(x0, xmax, xpoints, t0, timesteps + 2, 0.1,
+                                                         func_phiint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
+                                                         func_piint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
+                                                         "advection", "calcadh.txt", linestoread)
+    xarray2, times, phiarray2, piarray2 = solvernew.solving(x0, xmax, 2 * xpoints - 1, t0, timesteps + 2, 0.2,
+                                                            func_phiint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5,
+                                                                        0.05),
+                                                            func_piint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5,
+                                                                       0.05),
+                                                            "advection", "calcadh2.txt", linestoread)
+    # extra
+    xarray, times, phiarray, piarray = solvernew.solving(x0, xmax, xpoints, t0, timesteps + 2, 0.1,
+                                                         func_phiint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
+                                                         func_piint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
+                                                         "extrapolation", "calcexh.txt", linestoread)
+    xarray2, times, phiarray2, piarray2 = solvernew.solving(x0, xmax, 2 * xpoints - 1, t0, timesteps + 2, 0.2,
+                                                            func_phiint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5,
+                                                                        0.05),
+                                                            func_piint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5,
+                                                                       0.05),
+                                                            "extrapolation", "calcexh2.txt", linestoread)
+
+
+def conv_FD(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
+    func_phiint = funcsandder.gausswave
+    func_piint = funcsandder.dergaus
+
+    xarray, times, phiarray, piarray = solver.solving(x0, xmax, xpoints, t0, timesteps + 2, 0.1,
+                                                      func_phiint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
+                                                      func_piint(np.linspace(x0, xmax, xpoints), 0.5, 0.05),
+                                                      boundaryCondition, "calch.txt",
+                                                      linestoread)
+    xarray2, times, phiarray2, piarray2 = solver.solving(x0, xmax, 2 * xpoints - 1, t0, timesteps + 2, 0.2,
+                                                         func_phiint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5, 0.05),
+                                                         func_piint(np.linspace(x0, xmax, 2 * xpoints - 1), 0.5, 0.05),
+                                                         boundaryCondition, "calch2.txt", linestoread)
+
 
 
 def sineconv(x0, xmax, xpoints, t0, timesteps, alpha, phiinit, piinit, boundaryCondition, fileName, linestoread):
